@@ -22,7 +22,7 @@
 ########################################
 
 TARGET = fp
-OBJECTS = main.o src/Point.o src/PointBase.o src/Vector.o src/Matrix.o src/Camera.o 
+OBJECTS = main.o src/Map.o src/Point.o src/PointBase.o src/Vector.o src/Matrix.o src/Camera.o src/Config_Utils.o
 
 LOCAL_INC_PATH = /opt/local/include
 LOCAL_LIB_PATH = /opt/local/lib

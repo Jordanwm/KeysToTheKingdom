@@ -4,32 +4,32 @@
  *  Project: Key to the Kingdom
  *  File: main.cpp
  *
- *	Author: Jordan Moser
- *		Taylor McClure 
- *		Claire Collier - Fall 2015
+ *  Author: Jordan Moser
+ *      Taylor McClure 
+ *      Claire Collier - Fall 2015
  *
  */
 
-#ifdef __APPLE__			// if compiling on Mac OS
-	#include <GLUT/glut.h>
-	#include <OpenGL/gl.h>
-	#include <OpenGL/glu.h>
-#else					// else compiling on Linux OS
-	#include <GL/glut.h>
-	#include <GL/gl.h>
-	#include <GL/glu.h>
+#ifdef __APPLE__            // if compiling on Mac OS
+    #include <GLUT/glut.h>
+    #include <OpenGL/gl.h>
+    #include <OpenGL/glu.h>
+#else                   // else compiling on Linux OS
+    #include <GL/glut.h>
+    #include <GL/gl.h>
+    #include <GL/glu.h>
 #endif
 
 #include "SOIL/soil.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <math.h>
 #include <iostream>
 
 #include "Camera.h"
+#include "Map.h"
 #include "Texture_Utils.h"
+#include "Config_Utils.h"
 
 // GLOBAL VARIABLES ////////////////////////////////////////////////////////////
 
@@ -43,9 +43,10 @@ int gMouseX = 0, gMouseY = 0;
 bool gKeysPressed[256] = {false};
 
 Camera* gCamera;
+Map* gMap;
 
 double getRand() {
-   	return rand() / (double)RAND_MAX;
+    return rand() / (double)RAND_MAX;
 }
 
 void resizeWindow(int w, int h) {
@@ -74,7 +75,7 @@ void initScene()  {
     glLightfv( GL_LIGHT0, GL_AMBIENT, ambientCol );
     glEnable( GL_LIGHTING );
     glEnable( GL_LIGHT0 );
-	
+    
     // tell OpenGL not to use the material system; just use whatever we 
     // pass with glColor*()
     glEnable( GL_COLOR_MATERIAL );
@@ -83,7 +84,7 @@ void initScene()  {
 
     glShadeModel(GL_FLAT);
 
-    srand( time(NULL) );	// seed our random number generator
+    srand( time(NULL) );    // seed our random number generator
 
     gCtrlDown = false;
     gCamera = new ArcBall();
@@ -180,6 +181,9 @@ int main(int argc, char **argv) {
     initScene();
 
     //LoadTextures();
+    
+    if (!LoadGameFile(argc, argv)) // Load config file containing map, texture names, etc.
+        return(1);
 
     // and enter the GLUT loop, never to exit.
     glutMainLoop();
