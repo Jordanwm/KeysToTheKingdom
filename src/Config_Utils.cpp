@@ -44,11 +44,11 @@ bool LoadGameFile(int argc, char **argv)
     return result;
 }
 
+vector<Point> points;
 bool LoadMapPoints(ifstream &file)
 {
     printf("-> Loading Map\n");
     int NumberOfPoints = 0;
-    vector<Point> points;
     vector<float> floats;
 
     // Get number of points

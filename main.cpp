@@ -42,8 +42,8 @@ GLboolean gCtrlDown;
 int gMouseX = 0, gMouseY = 0;
 bool gKeysPressed[256] = {false};
 
-Camera* gCamera;
-Map* gMap;
+Camera* gCamera = NULL;
+Map* gMap = NULL;
 
 double getRand() {
     return rand() / (double)RAND_MAX;
@@ -99,7 +99,11 @@ void renderScene(void)  {
     glMatrixMode(GL_MODELVIEW);              //make sure we aren't changing the projection matrix!
     glLoadIdentity();
 
-    gCamera->Update();
+    if (gCamera)
+        gCamera->Update();
+
+    if (gMap)
+        gMap->Draw();
     
     //push the back buffer to the screen
     glutSwapBuffers();
@@ -134,7 +138,7 @@ void mouseCallback(int button, int state, int x, int y) {
 }
 
 void mouseMotion(int x, int y) {
-    if(gLeftMouseButton == GLUT_DOWN) {
+    if(gLeftMouseButton == GLUT_DOWN && gCamera) {
         if (gCtrlDown && gCamera->IsArcBall()) {
             ((ArcBall*)gCamera)->setRadius(((ArcBall*)gCamera)->getRadius() + 0.05 * (y - gMouseY));
         }
@@ -152,7 +156,21 @@ void mouseMotion(int x, int y) {
 }
 
 void updateScene(int value){
-    gCamera->Recompute();
+    if (gMap)
+        gMap->Update();
+
+    if (gCamera && gCamera->IsArcBall()){
+        Vector heading = gMap->getHeading();
+        Vector positiveX(1,0,0);
+        double a = angle(positiveX, heading);
+
+        ((ArcBall*) gCamera)->setTheta(a + M_PI);
+    }
+    
+    if (gCamera){
+        gCamera->setLookAt(gMap->getLocation());
+        gCamera->Recompute();
+    }
         
     glutPostRedisplay();
 

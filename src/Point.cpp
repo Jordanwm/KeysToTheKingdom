@@ -48,6 +48,10 @@
 		return Point(a.getX()+b.getX(), a.getY()+b.getY(), a.getZ()+b.getZ());
 	}
 
+	Point operator+(Vector b, Point a) {
+		return Point(a.getX()+b.getX(), a.getY()+b.getY(), a.getZ()+b.getZ());
+	}
+
 	Vector operator-(Point a, Point b) {
 		return Vector(a.getX()-b.getX(), a.getY()-b.getY(), a.getZ()-b.getZ());
 	}
@@ -94,7 +98,9 @@
 	}
 
 	bool operator==(Point a, Point b) {
-		return ( a.getX() == b.getX() && a.getY() == b.getY() && a.getZ() == b.getZ() );
+		double tol = 0.0000001;
+
+		return ( abs(a.getX() - b.getX()) < tol && abs(a.getY() - b.getY()) < tol && abs(a.getZ() - b.getZ()) < tol );
 	}
 
 	bool operator!=(Point a, Point b) {
