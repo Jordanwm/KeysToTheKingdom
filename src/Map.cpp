@@ -14,6 +14,16 @@
 
 using namespace std;
 
+/*
+ *
+ * TODO: 
+ * 1) Create rounded corners for game map or something to that effect to smooth transition 
+ *    from one stretch to the next. Add to Map::Map(vector<Point>) function
+ * 2) Add Texture to road in Draw function
+ * 3) Add more details to road?
+ *
+*/
+
 Map::Map()
 {
 	_IndexInPoints = 1;

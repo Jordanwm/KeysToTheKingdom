@@ -10,6 +10,19 @@
  *
  */
 
+ /*
+ *
+ * TODO: 
+ * 1) todos in Map file.
+ * 2) Add Hero to road.
+ * 3) Control hero with mouse movement
+ * 4) Add Skybox
+ * 5) Add health to hero
+ * 6) Display health in HUD
+ * 7) Add viewport with top down view?
+ *
+*/
+
 #ifdef __APPLE__            // if compiling on Mac OS
     #include <GLUT/glut.h>
     #include <OpenGL/gl.h>
@@ -166,7 +179,7 @@ void updateScene(int value){
 
         ((ArcBall*) gCamera)->setTheta(a + M_PI);
     }
-    
+
     if (gCamera){
         gCamera->setLookAt(gMap->getLocation());
         gCamera->Recompute();
