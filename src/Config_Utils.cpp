@@ -39,6 +39,9 @@ bool LoadGameFile(int argc, char **argv)
             if (!(result = LoadMapPoints(file))) PrintErrorMsg(FAIL_LOADING_MAP);
     }
 
+    if (result)
+        printf("Finished loading Game File\n");
+
     file.close();
 
     return result;
