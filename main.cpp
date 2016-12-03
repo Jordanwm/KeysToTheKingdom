@@ -138,21 +138,21 @@ void mouseCallback(int button, int state, int x, int y) {
 }
 
 void mouseMotion(int x, int y) {
-    if(gLeftMouseButton == GLUT_DOWN && gCamera) {
-        if (gCtrlDown && gCamera->IsArcBall()) {
-            ((ArcBall*)gCamera)->setRadius(((ArcBall*)gCamera)->getRadius() + 0.05 * (y - gMouseY));
-        }
-        else if (gCamera->IsArcBall()){
-            ((ArcBall*)gCamera)->setTheta(((ArcBall*)gCamera)->getTheta() + 0.005 * (x - gMouseX));
-            ((ArcBall*)gCamera)->setPhi(((ArcBall*)gCamera)->getPhi() + 0.005 * (gMouseY- y));
-        }
+    // if(gLeftMouseButton == GLUT_DOWN && gCamera) {
+    //     if (gCtrlDown && gCamera->IsArcBall()) {
+    //         ((ArcBall*)gCamera)->setRadius(((ArcBall*)gCamera)->getRadius() + 0.05 * (y - gMouseY));
+    //     }
+    //     else if (gCamera->IsArcBall()){
+    //         ((ArcBall*)gCamera)->setTheta(((ArcBall*)gCamera)->getTheta() + 0.005 * (x - gMouseX));
+    //         ((ArcBall*)gCamera)->setPhi(((ArcBall*)gCamera)->getPhi() + 0.005 * (gMouseY- y));
+    //     }
 
-        gCamera->Recompute();
+    //     gCamera->Recompute();
 
-        gMouseX = x;
-        gMouseY = y;
-        glutPostRedisplay(); // redraw our scene from our new camera POV
-    }
+    //     gMouseX = x;
+    //     gMouseY = y;
+    //     glutPostRedisplay(); // redraw our scene from our new camera POV
+    // }
 }
 
 void updateScene(int value){
