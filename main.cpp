@@ -44,6 +44,8 @@
 #include "Texture_Utils.h"
 #include "Config_Utils.h"
 
+#define DEBUG_MAIN_LOOP 0
+
 // GLOBAL VARIABLES ////////////////////////////////////////////////////////////
 
 static size_t windowWidth  = 640;
@@ -104,6 +106,9 @@ void initScene()  {
 }
 
 void renderScene(void)  {
+    if (DEBUG_MAIN_LOOP)
+        cout << "Rendering Scene" << endl;
+
     //clear the render buffer
     glDrawBuffer( GL_BACK );
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -112,17 +117,27 @@ void renderScene(void)  {
     glMatrixMode(GL_MODELVIEW);              //make sure we aren't changing the projection matrix!
     glLoadIdentity();
 
+    if (DEBUG_MAIN_LOOP)
+        cout << "Updating Camera" << endl;
     if (gCamera)
         gCamera->Update();
-
+    
+    if (DEBUG_MAIN_LOOP)
+        cout << "Drawing Map" << endl;
     if (gMap)
         gMap->Draw();
     
     //push the back buffer to the screen
     glutSwapBuffers();
+
+    if (DEBUG_MAIN_LOOP)
+        cout << "Finished Rendering Scene" << endl;
 }
 
 void normalKeysDown(unsigned char key, int x, int y) {
+    if (DEBUG_MAIN_LOOP)
+        cout << "Key down" << endl;
+
     if(key == 'q' || key == 'Q' || key == 27)
         exit(0);
 
@@ -132,10 +147,16 @@ void normalKeysDown(unsigned char key, int x, int y) {
 }
 
 void normalKeysUp(unsigned char key, int x, int y) {
+    if (DEBUG_MAIN_LOOP)
+        cout << "KeyUp" << endl;
+
     gKeysPressed[key] = false;
 }
 
 void mouseCallback(int button, int state, int x, int y) {
+    if (DEBUG_MAIN_LOOP)
+        cout << "Mouse Callback" << endl;
+
     if(button == GLUT_LEFT_BUTTON)
         gLeftMouseButton = state;
         
@@ -151,6 +172,8 @@ void mouseCallback(int button, int state, int x, int y) {
 }
 
 void mouseMotion(int x, int y) {
+    if (DEBUG_MAIN_LOOP)
+        cout << "Mouse Motion" << endl;
     // if(gLeftMouseButton == GLUT_DOWN && gCamera) {
     //     if (gCtrlDown && gCamera->IsArcBall()) {
     //         ((ArcBall*)gCamera)->setRadius(((ArcBall*)gCamera)->getRadius() + 0.05 * (y - gMouseY));
@@ -169,13 +192,22 @@ void mouseMotion(int x, int y) {
 }
 
 void updateScene(int value){
+    if (DEBUG_MAIN_LOOP)
+        cout << "Updating Scene" << endl;
+
     if (gMap)
         gMap->Update();
 
     if (gCamera && gCamera->IsArcBall()){
         Vector heading = gMap->getHeading();
         Vector positiveX(1,0,0);
-        double a = angle(positiveX, heading);
+
+        Vector c = cross(heading, positiveX);
+        double a = angle(heading, positiveX);
+
+        // Angle is actually negative, angle returns abs value
+        if (c.getY() < 0)
+            a *= -1;
 
         ((ArcBall*) gCamera)->setTheta(a + M_PI);
     }
@@ -188,6 +220,9 @@ void updateScene(int value){
     glutPostRedisplay();
 
     glutTimerFunc(1000.0/60.0, updateScene, 0);
+
+    if (DEBUG_MAIN_LOOP)
+        cout << "Done Updating Scene" << endl;
 }
 
 int main(int argc, char **argv) {
@@ -216,6 +251,8 @@ int main(int argc, char **argv) {
     if (!LoadGameFile(argc, argv)) // Load config file containing map, texture names, etc.
         return(1);
 
+    if (DEBUG_MAIN_LOOP)
+        cout << "Entering Main Loop" << endl;
     // and enter the GLUT loop, never to exit.
     glutMainLoop();
 
