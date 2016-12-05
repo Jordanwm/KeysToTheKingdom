@@ -302,15 +302,15 @@ void renderScene(void)  {
         cout << "Updating Camera" << endl;
     if (gCamera)
         gCamera->Update();
-    
+
     if (DEBUG_MAIN_LOOP)
         cout << "Drawing Map" << endl;
     if (gMap)
         gMap->Draw();
 
     glPushMatrix(); {
-		glTranslatef(getLocation().getX(), getLocation().getY(), getLocation().getZ());
-        glScalef(0.2, 0.2, 0.2);
+		glTranslatef(gMap->getLocation().getX(), gMap->getLocation().getY(), gMap->getLocation().getZ());
+        //glScalef(0, 0, 0);
 		glRotatef(rotate_angle, 0, 1, 0);
 		drawCar();
 	} glPopMatrix();
@@ -360,9 +360,11 @@ void mouseCallback(int button, int state, int x, int y) {
 }
 
 void mouseMotion(int x, int y) {
-    if (DEBUG_MAIN_LOOP)
-        cout << "Mouse Motion" << endl;
-    // if(gLeftMouseButton == GLUT_DOWN && gCamera) {
+    if(gLeftMouseButton == GLUT_DOWN) {
+        cout << "X:" << gMouseX << "Y: " << gMouseY << endl;
+
+        //cameraTheta += (x - mouseX)*0.005;
+        //cameraPhi   += (y - mouseY)*0.005;
     //     if (gCtrlDown && gCamera->IsArcBall()) {
     //         ((ArcBall*)gCamera)->setRadius(((ArcBall*)gCamera)->getRadius() + 0.05 * (y - gMouseY));
     //     }
@@ -373,10 +375,10 @@ void mouseMotion(int x, int y) {
 
     //     gCamera->Recompute();
 
-    //     gMouseX = x;
-    //     gMouseY = y;
-    //     glutPostRedisplay(); // redraw our scene from our new camera POV
-    // }
+        gMouseX = x;
+        gMouseY = y;
+        glutPostRedisplay(); // redraw our scene from our new camera POV
+    }
 }
 
 void updateScene(int value){
@@ -406,6 +408,8 @@ void updateScene(int value){
     }
 
     glutPostRedisplay();
+
+    prop_rotation += 10;
 
     glutTimerFunc(1000.0/60.0, updateScene, 0);
 
