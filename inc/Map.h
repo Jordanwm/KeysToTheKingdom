@@ -10,13 +10,14 @@ using namespace std;
 class Map {
 	int _IndexInPoints;
     bool _MapComplete;
-    vector<Point> _Points;
+    vector<Point*> _Points;
+    vector<Point*> _PointsWithRoundedCorners;
     Point _CurrentLocation;
     Vector _Heading;
 
 public:
     Map();
-    Map(vector<Point> pts);
+    Map(vector<Point*> pts);
 
     Point getLocation(){return _CurrentLocation;}
     void setLocation(Point loc){_CurrentLocation = loc;}
@@ -24,6 +25,7 @@ public:
     Vector getHeading(){return _Heading;}
     void setHeading(Vector h){_Heading = h;}
 
+    void CreateRoundedCorners();
     void MoveForward();
 
     void Draw();

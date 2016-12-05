@@ -47,12 +47,12 @@ bool LoadGameFile(int argc, char **argv)
     return result;
 }
 
-vector<Point> points;
 bool LoadMapPoints(ifstream &file)
 {
     printf("-> Loading Map\n");
     int NumberOfPoints = 0;
     vector<float> floats;
+    vector<Point*> points;
 
     // Get number of points
     getFloatsFromFile(file, floats);
@@ -69,7 +69,7 @@ bool LoadMapPoints(ifstream &file)
         getFloatsFromFile(file, floats);
 
         if (floats.size() == 3){
-            Point p(floats[0], floats[1], floats[2]);
+            Point* p = new Point(floats[0], floats[1], floats[2]);
             points.push_back(p);
         }
         else {
