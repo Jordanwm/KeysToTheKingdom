@@ -67,6 +67,9 @@ float wheel_rotation = 0;
 float prop_rotation = 0;
 float rotate_angle = 0;
 
+float carX = 0;
+float carZ = 0;
+
 void drawProp() {
 	glColor3ub(0, 255, 0);
 	glPushMatrix(); {
@@ -312,7 +315,7 @@ void renderScene(void)  {
         gMap->Draw();
 
     glPushMatrix(); {
-		glTranslatef(gMap->getLocation().getX(), gMap->getLocation().getY(), gMap->getLocation().getZ());
+		glTranslatef(gMap->getLocation().getX() + carX, gMap->getLocation().getY(), gMap->getLocation().getZ() + carZ);
         //glScalef(0, 0, 0);
 		glRotatef(rotate_angle, 0, 1, 0);
 		drawCar();
@@ -348,8 +351,8 @@ void mouseCallback(int button, int state, int x, int y) {
     if (DEBUG_MAIN_LOOP)
         cout << "Mouse Callback" << endl;
 
-    if(button == GLUT_LEFT_BUTTON)
-        gLeftMouseButton = state;
+    //if(button == GLUT_LEFT_BUTTON)
+    //    gLeftMouseButton = state;
 
     gMouseX = x;
     gMouseY = y;
@@ -363,11 +366,11 @@ void mouseCallback(int button, int state, int x, int y) {
 }
 
 void mouseMotion(int x, int y) {
-    if(gLeftMouseButton == GLUT_DOWN) {
+    //if(gLeftMouseButton == GLUT_DOWN) {
         cout << "X:" << gMouseX << "Y: " << gMouseY << endl;
 
-        //cameraTheta += (x - mouseX)*0.005;
-        //cameraPhi   += (y - mouseY)*0.005;
+        carX += (x - gMouseX)*0.005;
+        carZ += (y - gMouseY)*0.005;
     //     if (gCtrlDown && gCamera->IsArcBall()) {
     //         ((ArcBall*)gCamera)->setRadius(((ArcBall*)gCamera)->getRadius() + 0.05 * (y - gMouseY));
     //     }
@@ -381,7 +384,7 @@ void mouseMotion(int x, int y) {
         gMouseX = x;
         gMouseY = y;
         glutPostRedisplay(); // redraw our scene from our new camera POV
-    }
+    //}
 }
 
 void updateScene(int value){
@@ -435,7 +438,7 @@ int main(int argc, char **argv) {
     glutDisplayFunc(renderScene);
     glutReshapeFunc(resizeWindow);
     glutMouseFunc(mouseCallback);
-    glutMotionFunc(mouseMotion);
+    glutPassiveMotionFunc(mouseMotion);
     glutTimerFunc(1000.0/60.0, updateScene, 0);
 
     // do some basic OpenGL setup
