@@ -1,10 +1,14 @@
 #include "Config_Utils.h"
+#include "Texture_Utils.h"
 #include <cstdio>
 #include <string>
 
 #define DEBUG_LOAD 0
 
 using namespace std;
+
+extern GLuint* gSkyboxTextureHandles;
+extern vector<GLchar*> gSkyboxTextureNames;
 
 /* 
  * LoadGameFile
@@ -37,6 +41,9 @@ bool LoadGameFile(int argc, char **argv)
         
         if (line == ".MAP")
             if (!(result = LoadMapPoints(file))) PrintErrorMsg(FAIL_LOADING_MAP);
+
+        if (line == ".SKYBOX")
+            if(!(result = LoadSkybox(file))) PrintErrorMsg(FAIL_LOADING_SKYBOX);
     }
 
     if (result)
@@ -83,6 +90,30 @@ bool LoadMapPoints(ifstream &file)
     return true;
 }
 
+bool LoadSkybox(ifstream &file)
+{
+    printf("-> Loading Skybox\n");
+
+    // Load the 16 points fromt he config file
+    int i = 0;
+    for (; i < 6 && !file.eof(); ++i) {
+        string line;
+        getline(file, line); 
+        string value = line.substr(2, string::npos);
+        char * S = new char[value.length() + 1];
+        std::strcpy(S,value.c_str());
+        gSkyboxTextureNames.push_back(S);
+    }
+
+    if (!LoadTextures())
+        return false;
+
+    if (i != 6)
+        return false;
+
+    return true;
+}
+
 /* 
  * PrintErrorMsg
  *
@@ -100,6 +131,9 @@ void PrintErrorMsg(ErrorMsgs msg){
             break;
         case FAIL_OPENING_CONFIG: 
             err.append("Failed to open config file.");
+            break;
+        case FAIL_LOADING_SKYBOX:
+            err.append("Failed to load skybox textures");
             break;
     }
 

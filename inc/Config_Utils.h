@@ -9,12 +9,14 @@ extern Map* gMap;
 enum ErrorMsgs {
     FAIL_FIND_CONFIG=0,
     FAIL_LOADING_MAP=1,
-    FAIL_OPENING_CONFIG
+    FAIL_OPENING_CONFIG,
+    FAIL_LOADING_SKYBOX
 };
 
 bool LoadGameFile(int argc, char **argv);
 
 bool LoadMapPoints(ifstream &file);
+bool LoadSkybox(ifstream &file);
 
 void PrintErrorMsg(ErrorMsgs msg);
 

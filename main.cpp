@@ -57,6 +57,9 @@ GLboolean gCtrlDown;
 int gMouseX = 0, gMouseY = 0;
 bool gKeysPressed[256] = {false};
 
+GLuint* gSkyboxTextureHandles;
+vector<GLchar*> gSkyboxTextureNames;
+
 Camera* gCamera = NULL;
 Map* gMap = NULL;
 

@@ -1,36 +1,33 @@
 #include "Texture_Utils.h"
 
-GLuint* gTextureHandles;
-vector<GLchar*> gTextureNames;
+using namespace std;
 
-void LoadTextures()
+extern GLuint* gSkyboxTextureHandles;
+extern vector<GLchar*> gSkyboxTextureNames;
+
+bool LoadTextures()
 {
-	gTextureHandles = new GLuint[7];
-    
-    gTextureNames.push_back("textures/troubled-waters_rt.tga");
-    gTextureNames.push_back("textures/troubled-waters_lf.tga");
-    gTextureNames.push_back("textures/troubled-waters_up.tga");
-    gTextureNames.push_back("textures/troubled-waters_dn.tga");
-    gTextureNames.push_back("textures/troubled-waters_bk.tga");
-    gTextureNames.push_back("textures/troubled-waters_ft.tga");
-    gTextureNames.push_back("textures/brick.png");
+	gSkyboxTextureHandles = new GLuint[6];
 
-    for(GLuint i = 0; i < gTextureNames.size(); i++)
+    for(GLuint i = 0; i < gSkyboxTextureNames.size(); i++)
     {
-        gTextureHandles[i] = SOIL_load_OGL_texture(
-            gTextureNames[i],
+        gSkyboxTextureHandles[i] = SOIL_load_OGL_texture(
+            gSkyboxTextureNames[i],
             SOIL_LOAD_AUTO,
             SOIL_CREATE_NEW_ID,
             SOIL_FLAG_MIPMAPS
             | SOIL_FLAG_COMPRESS_TO_DXT
         );
 
-        if (gTextureHandles[i] == NULL)
-            cout << "ERROR" << endl;
+        if (gSkyboxTextureHandles[i] == NULL)
+            return false;
     }
+
+    return true;
 }
 
 void BindTexture(int index){
+    GLuint* gTextureHandles;
 	glGenTextures(0, &gTextureHandles[index]);
     glBindTexture(GL_TEXTURE_2D, gTextureHandles[index]);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
