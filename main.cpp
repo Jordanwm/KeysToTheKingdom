@@ -13,13 +13,12 @@
  /*
  *
  * TODO:
- * 1) todos in Map file.
- * 2) Add Hero to road.
+ * 1) Add Hero to its own object file.
+ * 2) Add airplane wings to the hero that tilt as you turn left and right
  * 3) Control hero with mouse movement
- * 4) Add Skybox
- * 5) Add health to hero
- * 6) Display health in HUD
- * 7) Add viewport with top down view?
+ * 4) Add health to hero
+ * 5) Display health in HUD
+ * 6) Add viewport with top down view?
  *
 */
 
