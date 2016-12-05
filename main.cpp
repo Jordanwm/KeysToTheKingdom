@@ -67,8 +67,7 @@ float wheel_rotation = 0;
 float prop_rotation = 0;
 float rotate_angle = 0;
 
-float carX = 0;
-float carZ = 0;
+Point carLocation;
 
 void drawProp() {
 	glColor3ub(0, 255, 0);
@@ -315,7 +314,7 @@ void renderScene(void)  {
         gMap->Draw();
 
     glPushMatrix(); {
-		glTranslatef(gMap->getLocation().getX() + carX, gMap->getLocation().getY(), gMap->getLocation().getZ() + carZ);
+		glTranslatef(gMap->getLocation().getX() + carLocation.getX(), gMap->getLocation().getY(), gMap->getLocation().getZ() + carLocation.getZ());
         //glScalef(0, 0, 0);
         glScalef(0.5, 0.5, 0.5);
 
@@ -368,25 +367,27 @@ void mouseCallback(int button, int state, int x, int y) {
 }
 
 void mouseMotion(int x, int y) {
-    //if(gLeftMouseButton == GLUT_DOWN) {
-        cout << "X:" << gMouseX << "Y: " << gMouseY << endl;
+    // Top Left corner of window is 0,0 so flip y;
+    int mousey = windowHeight - y - windowHeight / 2;
+    int mousex = x - windowWidth / 2;
 
-        carX += (x - gMouseX)*0.005;
-        carZ += (y - gMouseY)*0.005;
-    //     if (gCtrlDown && gCamera->IsArcBall()) {
-    //         ((ArcBall*)gCamera)->setRadius(((ArcBall*)gCamera)->getRadius() + 0.05 * (y - gMouseY));
-    //     }
-    //     else if (gCamera->IsArcBall()){
-    //         ((ArcBall*)gCamera)->setTheta(((ArcBall*)gCamera)->getTheta() + 0.005 * (x - gMouseX));
-    //         ((ArcBall*)gCamera)->setPhi(((ArcBall*)gCamera)->getPhi() + 0.005 * (gMouseY- y));
-    //     }
+    // Y moves forward
+    // X moves side to side
+    Vector heading;
+    
+    if (gMap)
+        heading = gMap->getHeading();
 
-    //     gCamera->Recompute();
+    heading.normalize();
+    Vector up(0,1,0);
+    Vector right = cross(heading, up);
+    right.normalize();
 
-        gMouseX = x;
-        gMouseY = y;
-        glutPostRedisplay(); // redraw our scene from our new camera POV
-    //}
+    carLocation = Point();
+    carLocation = carLocation + ((mousex)*0.02) * right;
+    carLocation = carLocation + ((mousey)*0.02) * heading;
+
+    glutPostRedisplay(); // redraw our scene from our new camera POV
 }
 
 void updateScene(int value){
@@ -447,6 +448,9 @@ int main(int argc, char **argv) {
     glutMouseFunc(mouseCallback);
     glutPassiveMotionFunc(mouseMotion);
     glutTimerFunc(1000.0/60.0, updateScene, 0);
+
+    glutWarpPointer( windowWidth / 2, windowHeight / 2 );
+    glutSetCursor(GLUT_CURSOR_NONE); 
 
     // do some basic OpenGL setup
     initScene();
