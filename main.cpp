@@ -410,9 +410,14 @@ void updateScene(int value){
         gCamera->Recompute();
     }
 
-    glutPostRedisplay();
-
     prop_rotation += 10;
+    Vector carDir(0,0,1);
+    Vector c = cross(carDir, gMap->getHeading());
+    rotate_angle = angle(carDir, gMap->getHeading()) * 180 / M_PI;
+    if (c.getY() < 0)
+        rotate_angle *= -1;
+
+    glutPostRedisplay();
 
     glutTimerFunc(1000.0/60.0, updateScene, 0);
 
