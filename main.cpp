@@ -317,6 +317,8 @@ void renderScene(void)  {
     glPushMatrix(); {
 		glTranslatef(gMap->getLocation().getX() + carX, gMap->getLocation().getY(), gMap->getLocation().getZ() + carZ);
         //glScalef(0, 0, 0);
+        glScalef(0.5, 0.5, 0.5);
+
 		glRotatef(rotate_angle, 0, 1, 0);
 		drawCar();
 	} glPopMatrix();
@@ -413,9 +415,14 @@ void updateScene(int value){
         gCamera->Recompute();
     }
 
-    glutPostRedisplay();
-
     prop_rotation += 10;
+    Vector carDir(0,0,1);
+    Vector c = cross(carDir, gMap->getHeading());
+    rotate_angle = angle(carDir, gMap->getHeading()) * 180 / M_PI;
+    if (c.getY() < 0)
+        rotate_angle *= -1;
+
+    glutPostRedisplay();
 
     glutTimerFunc(1000.0/60.0, updateScene, 0);
 
