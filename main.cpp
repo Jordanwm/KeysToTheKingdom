@@ -313,7 +313,7 @@ void renderScene(void)  {
 
     glPushMatrix(); {
 		glTranslatef(gMap->getLocation().getX(), gMap->getLocation().getY(), gMap->getLocation().getZ());
-        //glScalef(0, 0, 0);
+        glScalef(0.5, 0.5, 0.5);
 		glRotatef(rotate_angle, 0, 1, 0);
 		drawCar();
 	} glPopMatrix();
