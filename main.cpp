@@ -361,8 +361,8 @@ void mouseCallback(int button, int state, int x, int y) {
     if (DEBUG_MAIN_LOOP)
         cout << "Mouse Callback" << endl;
 
-    //if(button == GLUT_LEFT_BUTTON)
-    //    gLeftMouseButton = state;
+    if(button == GLUT_LEFT_BUTTON)
+        gLeftMouseButton = state;
 
     gMouseX = x;
     gMouseY = y;
@@ -395,6 +395,20 @@ void mouseMotion(int x, int y) {
     carLocation = Point();
     carLocation = carLocation + ((mousex)*0.02) * right;
     carLocation = carLocation + ((mousey)*0.02) * heading;
+
+    if(false && gLeftMouseButton == GLUT_DOWN && gCamera) {
+        if (gCtrlDown && gCamera->IsArcBall()) {
+            ((ArcBall*)gCamera)->setRadius(((ArcBall*)gCamera)->getRadius() + 0.05 * (y - gMouseY));
+        }
+        else if (gCamera->IsArcBall()){
+            ((ArcBall*)gCamera)->setTheta(((ArcBall*)gCamera)->getTheta() + 0.005 * (x - gMouseX));
+            ((ArcBall*)gCamera)->setPhi(((ArcBall*)gCamera)->getPhi() + 0.005 * (gMouseY- y));
+        }
+
+        gCamera->Recompute();
+        gMouseX = x;
+        gMouseY = y;
+    }
 
     glutPostRedisplay(); // redraw our scene from our new camera POV
 }
