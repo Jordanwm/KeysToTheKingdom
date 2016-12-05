@@ -17,7 +17,7 @@
 #include <vector>
 #include <iostream>
 
-bool LoadTextures();
-void BindTexture(int index);
+bool LoadTextures(GLuint* &textureHandles, std::vector<char*> textureNames);
+void BindTexture(int index, GLuint* textureHandles);
 
 #endif TEXTURE_UTILS_H

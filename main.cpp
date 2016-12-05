@@ -41,6 +41,7 @@
 
 #include "Camera.h"
 #include "Map.h"
+#include "Skybox.h"
 #include "Texture_Utils.h"
 #include "Config_Utils.h"
 
@@ -62,6 +63,7 @@ vector<GLchar*> gSkyboxTextureNames;
 
 Camera* gCamera = NULL;
 Map* gMap = NULL;
+Skybox* gSkybox = NULL;
 
 float wheel_rotation = 0;
 float prop_rotation = 0;
@@ -289,6 +291,7 @@ void initScene()  {
 
     gCtrlDown = false;
     gCamera = new ArcBall();
+    gSkybox = new Skybox();
 }
 
 void renderScene(void)  {
@@ -308,6 +311,13 @@ void renderScene(void)  {
     if (gCamera)
         gCamera->Update();
 
+    glPushMatrix();
+        if (gMap)
+            gMap->getLocation().glTranslate();
+        if (gSkybox)
+            gSkybox->Draw();
+    glPopMatrix();
+
     if (DEBUG_MAIN_LOOP)
         cout << "Drawing Map" << endl;
     if (gMap)
@@ -315,7 +325,6 @@ void renderScene(void)  {
 
     glPushMatrix(); {
 		glTranslatef(gMap->getLocation().getX() + carLocation.getX(), gMap->getLocation().getY(), gMap->getLocation().getZ() + carLocation.getZ());
-        //glScalef(0, 0, 0);
         glScalef(0.5, 0.5, 0.5);
 
 		glRotatef(rotate_angle, 0, 1, 0);

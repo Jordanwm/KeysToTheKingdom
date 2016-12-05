@@ -105,7 +105,7 @@ bool LoadSkybox(ifstream &file)
         gSkyboxTextureNames.push_back(S);
     }
 
-    if (!LoadTextures())
+    if (!LoadTextures(gSkyboxTextureHandles, gSkyboxTextureNames))
         return false;
 
     if (i != 6)
