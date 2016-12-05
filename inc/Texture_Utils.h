@@ -17,12 +17,7 @@
 #include <vector>
 #include <iostream>
 
-using namespace std;
-
-extern GLuint* gTextureHandles;
-extern vector<GLchar*> gTextureNames;
-
-void LoadTextures();
+bool LoadTextures();
 void BindTexture(int index);
 
 #endif TEXTURE_UTILS_H
