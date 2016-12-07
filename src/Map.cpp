@@ -60,6 +60,11 @@ Map::Map(vector<Point*> pts)
     _Heading = *_Points[_IndexInPoints] - *_Points[_IndexInPoints-1];
     _Heading.normalize();
 
+    _Length = 0;
+    for (int i = 0; i < _Points.size()-1; ++i){
+    	_Length += (*_Points[i+1] - *_Points[i]).mag();
+    }
+
     CreateRoundedCorners();
 }
 

@@ -14,6 +14,7 @@ class Map {
     vector<Point*> _PointsWithRoundedCorners;
     Point _CurrentLocation;
     Vector _Heading;
+    double _Length;
 
 public:
     Map();
