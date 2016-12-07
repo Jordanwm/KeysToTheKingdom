@@ -192,6 +192,9 @@ void mouseCallback(int button, int state, int x, int y) {
 }
 
 void mouseMotion(int x, int y) {
+    if (!(x < windowWidth && x > 0 && y < windowHeight && y > 0))
+        return;
+
     // Top Left corner of window is 0,0 so flip y;
     int mousey = windowHeight - y - windowHeight / 2;
     int mousex = x - windowWidth / 2;
@@ -209,8 +212,8 @@ void mouseMotion(int x, int y) {
     right.normalize();
 
     planeLocation = Point();
-    planeLocation = planeLocation + ((mousex)*0.02) * right;
-    planeLocation = planeLocation + ((mousey)*0.02) * heading;
+    planeLocation = planeLocation + ((mousex)*0.015) * right;
+    planeLocation = planeLocation + ((mousey)*0.03) * heading;
 
     if(false && gLeftMouseButton == GLUT_DOWN && gCamera) {
         if (gCtrlDown && gCamera->IsArcBall()) {
