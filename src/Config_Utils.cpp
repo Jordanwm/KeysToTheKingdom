@@ -75,8 +75,8 @@ bool LoadMapPoints(ifstream &file)
     {
         getFloatsFromFile(file, floats);
 
-        if (floats.size() == 3){
-            Point* p = new Point(floats[0], floats[1], floats[2]);
+        if (floats.size() == 2){
+            Point* p = new Point(floats[0], 0.0, floats[1]);
             points.push_back(p);
         }
         else {

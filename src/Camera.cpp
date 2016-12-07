@@ -35,7 +35,7 @@ ArcBall::ArcBall()
 	:Camera()
 {
 	_Theta = M_PI;
-	_Phi = 3.0 * M_PI/8.0;
+	_Phi = 3.5 * M_PI/8.0;
 	_Radius = 10;
 	Recompute();
 	Update();
