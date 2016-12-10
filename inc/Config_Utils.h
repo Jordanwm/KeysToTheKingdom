@@ -10,13 +10,17 @@ enum ErrorMsgs {
     FAIL_FIND_CONFIG=0,
     FAIL_LOADING_MAP=1,
     FAIL_OPENING_CONFIG,
-    FAIL_LOADING_SKYBOX
+    FAIL_LOADING_SKYBOX,
+    FAIL_LOADING_TRACK_TEXTURE,
+    FAIL_LOADING_TRACK_SHADER
 };
 
 bool LoadGameFile(int argc, char **argv);
 
 bool LoadMapPoints(ifstream &file);
 bool LoadSkybox(ifstream &file);
+bool LoadTrackTexture(ifstream &file);
+bool LoadTrackShaders(ifstream &file);
 
 void PrintErrorMsg(ErrorMsgs msg);
 
