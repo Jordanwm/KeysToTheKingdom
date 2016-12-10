@@ -1,5 +1,7 @@
 # Executable
 fp
+fp.exe
+Makefile
 
 # Compiled Object files
 *.slo
