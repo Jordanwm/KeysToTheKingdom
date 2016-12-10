@@ -224,10 +224,13 @@ void mouseMotion(int x, int y) {
     Vector up(0,1,0);
     Vector right = cross(heading, up);
     right.normalize();
+
+    double xproportion = 0.015;
+    xproportion = ((double(windowHeight - y) / windowHeight)+0.2) * 0.015;
     
     Point oldLocation = planeLocation;
     planeLocation = Point();
-    planeLocation = planeLocation + ((mousex)*0.015) * right;
+    planeLocation = planeLocation + ((mousex)*xproportion) * right;
     planeLocation = planeLocation + ((mousey)*0.03) * heading;
 
     // Update wing rotation if strafing
