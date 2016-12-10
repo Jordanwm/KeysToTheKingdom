@@ -13,6 +13,7 @@
 #include <iostream>
 #include <cmath>
 
+
 #define DEBUG_CREATE_CORNERS 0
 #define DEBUG_ANGLE_OF_TURNS 0
 
@@ -39,10 +40,12 @@ Map::Map()
 
     _Heading = *_Points[_IndexInPoints] - *_Points[_IndexInPoints-1];
     _Heading.normalize();
+	//isFuture = true;
 }
 
 Map::Map(vector<Point*> pts)
 {
+	//isFuture = true;
 	_IndexInPoints = 1;
     
     if (pts.size() > 1){
@@ -275,3 +278,35 @@ void Map::Draw()
 		glEnd();
 	}
 }
+
+//To get where the map is farther along to place bubbles in advance.
+//void Map::setFuture() {
+//	Vector newHeading;
+//	Point newLocation;
+//	int newIndexInPoints = _IndexInPoints;
+//	if (_CurrentLocation == *_PointsWithRoundedCorners[newIndexInPoints] && _PointsWithRoundedCorners.size() - 1 > newIndexInPoints) {
+//		newLocation = *_PointsWithRoundedCorners[newIndexInPoints];
+//		++newIndexInPoints;
+//		newHeading = *_PointsWithRoundedCorners[newIndexInPoints] - *_PointsWithRoundedCorners[newIndexInPoints - 1];
+//		newHeading.normalize();
+//		//Now 1 ahead.
+//		for (int j = 0; j < 15; j++) {
+//			if (newLocation == *_PointsWithRoundedCorners[newIndexInPoints] && _PointsWithRoundedCorners.size() - 1 > newIndexInPoints) {
+//				newLocation = *_PointsWithRoundedCorners[newIndexInPoints];
+//				++newIndexInPoints;
+//				newHeading = *_PointsWithRoundedCorners[newIndexInPoints] - *_PointsWithRoundedCorners[newIndexInPoints - 1];
+//				newHeading.normalize();
+//				if (j == 14) {
+//					nextHeading = newHeading;
+//					nextLocation = newLocation;
+//				}
+//			}
+//			else {
+//				isFuture = false;
+//			}
+//		}
+//	}
+//	else {
+//		isFuture = false;
+//	}
+//}/

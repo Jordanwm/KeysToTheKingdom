@@ -22,14 +22,15 @@
 ########################################
 
 TARGET = fp
-OBJECTS = main.o src/Point.o src/PointBase.o src/Vector.o src/Matrix.o src/Camera.o src/Texture_Utils.o src/Config_Utils.o src/Skybox.o src/Map.o src/Hero.o
+OBJECTS = main.o src/Point.o src/PointBase.o src/Vector.o src/Matrix.o src/Camera.o src/Texture_Utils.o src/Config_Utils.o src/Skybox.o src/Map.o src/Hero.o src/Bubble.o
 
 LOCAL_INC_PATH = /opt/local/include
 LOCAL_LIB_PATH = /opt/local/lib
 LOCAL_BIN_PATH = /opt/local/bin
 
-BUILDING_IN_LAB = 0
+BUILDING_IN_LAB = 1
 
+USING_GLEW = 0
 USING_OPENGL = 1
 USING_SOIL = 1
 
@@ -45,7 +46,7 @@ USING_SOIL = 1
 ## COMPILING INFO
 #############################
 
-CXX    = g++
+CXX    = C:/Strawberry/c/bin/g++.exe
 CFLAGS = -Wall -g -w
 
 INCPATH += -I./inc
@@ -64,6 +65,26 @@ ifeq ($(BUILDING_IN_LAB), 0)
         LAB_LIB_PATH = $(LOCAL_LIB_PATH)
         LAB_BIN_PATH = $(LOCAL_BIN_PATH)
     endif
+endif
+
+# if we are using SOIL in this program
+ifeq ($(USING_SOIL), 1)
+    # Windows builds
+    ifeq ($(OS), Windows_NT)
+        INCPATH += -I$(LAB_INC_PATH)
+        LIBPATH += -L$(LAB_LIB_PATH)
+    # Mac builds
+    else ifeq ($(shell uname), Darwin)
+        INCPATH += -I$(LOCAL_INC_PATH)
+        LIBPATH += -L$(LOCAL_LIB_PATH)
+	LIBS += -framework CoreFoundation	
+    # Linux
+    else
+        INCPATH += -I$(LOCAL_INC_PATH)
+        LIBPATH += -L$(LOCAL_LIB_PATH)
+    endif
+	
+    LIBS += -lSOIL
 endif
 
 #############################
@@ -88,24 +109,30 @@ ifeq ($(USING_OPENGL), 1)
     endif
 endif
 
-# if we are using SOIL in this program
-ifeq ($(USING_SOIL), 1)
+
+
+#############################
+## SETUP GLEW 
+#############################
+
+# if we are using GLEW in this program
+ifeq ($(USING_GLEW), 1)
     # Windows builds
     ifeq ($(OS), Windows_NT)
         INCPATH += -I$(LAB_INC_PATH)
         LIBPATH += -L$(LAB_LIB_PATH)
-    # Mac builds
-    else ifeq ($(shell uname), Darwin)
+		LIBS += -lGLEW.dll
+		WINDOWS_GLEW = 1
+
+    # Non-Windows builds
+	else
         INCPATH += -I$(LOCAL_INC_PATH)
         LIBPATH += -L$(LOCAL_LIB_PATH)
-	LIBS += -framework CoreFoundation	
-    # Linux
-    else
-        INCPATH += -I$(LOCAL_INC_PATH)
-        LIBPATH += -L$(LOCAL_LIB_PATH)
+		LIBS += -lglew
+		WINDOWS_GLEW = 0
     endif
-	
-    LIBS += -lSOIL
+else
+	WINDOWS_GLEW = 0
 endif
 
 #############################

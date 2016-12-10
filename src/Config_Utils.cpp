@@ -1,7 +1,22 @@
+#include <GL/glew.h>
+
+#ifdef __APPLE__            // if compiling on Mac OS
+	#include <GLUT/glut.h>
+	#include <OpenGL/gl.h>
+	#include <OpenGL/glu.h>
+#else                   // else compiling on Linux OS
+	#include <GL/glut.h>
+	#include <GL/gl.h>
+	#include <GL/glu.h>
+#endif
+
 #include "Config_Utils.h"
 #include "Texture_Utils.h"
 #include <cstdio>
 #include <string>
+#include <vector>
+
+
 
 #define DEBUG_LOAD 0
 
@@ -101,7 +116,7 @@ bool LoadSkybox(ifstream &file)
         getline(file, line); 
         string value = line.substr(2, string::npos);
         char * S = new char[value.length() + 1];
-        std::strcpy(S,value.c_str());
+        strcpy(S,value.c_str());
         gSkyboxTextureNames.push_back(S);
     }
 
