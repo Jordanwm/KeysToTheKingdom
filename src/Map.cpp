@@ -21,6 +21,8 @@
 extern GLuint* gTrackTextureHandles;
 extern vector<GLchar*> gTrackTextureNames;
 
+extern GLuint trackShaderHandle;
+
 using namespace std;
 
 /*

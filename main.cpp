@@ -20,6 +20,8 @@
  *
 */
 
+#include <GL/glew.h>
+
 #ifdef __APPLE__            // if compiling on Mac OS
     #include <GLUT/glut.h>
     #include <OpenGL/gl.h>
@@ -61,6 +63,8 @@ vector<GLchar*> gSkyboxTextureNames;
 
 GLuint* gTrackTextureHandles;
 vector<GLchar*> gTrackTextureNames;
+
+GLuint trackShaderHandle;
 
 Camera* gCamera = NULL;
 Map* gMap = NULL;
@@ -142,9 +146,13 @@ void renderScene(void)  {
 
     if (DEBUG_MAIN_LOOP)
         cout << "Drawing Map" << endl;
+    
+    glUseProgram(trackShaderHandle);
+
     if (gMap)
         gMap->Draw();
 
+    glUseProgram(0);
     if (gHero)
         gHero->Draw();
 
@@ -293,6 +301,30 @@ int main(int argc, char **argv) {
 
     glutWarpPointer( windowWidth / 2, windowHeight / 2 );
     glutSetCursor(GLUT_CURSOR_NONE); 
+
+    /* initialize GLEW */
+    GLenum glewResult = glewInit();
+    /* check for an error */
+    if( glewResult != GLEW_OK ) {
+        printf( "[ERROR]: Error initalizing GLEW\n");
+        return 0;
+    }
+    /* make sure OpenGL 2.0 is supported */
+    if( !glewIsSupported( "GL_VERSION_2_0" ) ) {
+        printf( "[ERROR]: System does not support OpenGL 2.0 and GLSL\n" );
+        return 0;
+    }
+    
+    fprintf(stdout, "[INFO]: /--------------------------------------------------------\\\n");
+    fprintf(stdout, "[INFO]: | OpenGL Information                                     |\n");
+    fprintf(stdout, "[INFO]: |--------------------------------------------------------|\n");
+    fprintf(stdout, "[INFO]: |   OpenGL Version:  %35s |\n", glGetString(GL_VERSION));
+    fprintf(stdout, "[INFO]: |   OpenGL Renderer: %35s |\n", glGetString(GL_RENDERER));
+    fprintf(stdout, "[INFO]: |   OpenGL Vendor:   %35s |\n", glGetString(GL_VENDOR));
+    fprintf(stdout, "[INFO]: |   Shading Version: %35s |\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    fprintf(stdout, "[INFO]: \\--------------------------------------------------------/\n\n");
+    
+    printf( "[INFO]: System supports OpenGL2.0 and GLSL!\n\n" );
 
     // do some basic OpenGL setup
     initScene();

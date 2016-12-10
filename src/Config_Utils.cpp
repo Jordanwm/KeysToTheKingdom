@@ -1,4 +1,5 @@
 #include "Config_Utils.h"
+#include "Shader_Utils.h"
 #include "Texture_Utils.h"
 #include <cstdio>
 #include <string>
@@ -12,6 +13,8 @@ extern vector<GLchar*> gSkyboxTextureNames;
 
 extern GLuint* gTrackTextureHandles;
 extern vector<GLchar*> gTrackTextureNames;
+
+extern GLuint trackShaderHandle;
 
 /* 
  * LoadGameFile
@@ -47,8 +50,12 @@ bool LoadGameFile(int argc, char **argv)
 
         if (line == ".SKYBOX")
             if(!(result = LoadSkybox(file))) PrintErrorMsg(FAIL_LOADING_SKYBOX);
+
         if (line == ".TRACK_TEXTURE")
             if(!(result = LoadTrackTexture(file))) PrintErrorMsg(FAIL_LOADING_TRACK_TEXTURE);
+
+        if (line == ".TRACK_SHADER")
+            if(!(result = LoadTrackShaders(file))) PrintErrorMsg(FAIL_LOADING_TRACK_SHADER);            
     }
 
     if (result)
@@ -136,6 +143,27 @@ bool LoadTrackTexture(ifstream &file)
     return true;
 }
 
+bool LoadTrackShaders(ifstream &file)
+{
+    printf("-> Loading Track Shaders\n");
+
+    vector<char*> files;
+    int i = 0;
+    for (; i < 2 && !file.eof(); ++i) {
+        string line;
+        getline(file, line); 
+        string value = line.substr(2, string::npos);
+        char * S = new char[value.length() + 1];
+        std::strcpy(S,value.c_str());
+        files.push_back(S);
+    }
+
+    if ((trackShaderHandle = createShaderProgram(files[0], files[1])) == NULL)
+        return false;
+
+    return true;
+}
+
 /* 
  * PrintErrorMsg
  *
@@ -159,6 +187,9 @@ void PrintErrorMsg(ErrorMsgs msg){
             break;
         case FAIL_LOADING_TRACK_TEXTURE:
             err.append("Failed to load track texture");
+            break;
+        case FAIL_LOADING_TRACK_SHADER:
+            err.append("Failed to load track shader");
             break;
     }
 

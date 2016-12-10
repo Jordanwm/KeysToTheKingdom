@@ -11,3 +11,6 @@
 ..res/5dim_ft.tga
 .TRACK_TEXTURE
 ..res/surface.png
+.TRACK_SHADER
+..shaders/progress.v.glsl
+..shaders/progress.f.glsl
