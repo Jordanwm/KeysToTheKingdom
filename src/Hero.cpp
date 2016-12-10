@@ -190,6 +190,7 @@ void Plane::Draw()
         glTranslatef(0,0.25,0);
         glScalef(0.5, 0.5, 0.5);
         glRotatef(rotate_angle, 0, 1, 0);
+        glRotatef(-wing_rotation, 0, 0, 1);
         
         //Draw body
         glPushMatrix(); {
