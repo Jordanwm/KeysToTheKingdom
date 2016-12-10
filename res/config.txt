@@ -9,3 +9,5 @@
 ..res/5dim_dn.tga
 ..res/5dim_bk.tga
 ..res/5dim_ft.tga
+.TRACK_TEXTURE
+..res/surface.png

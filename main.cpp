@@ -13,12 +13,10 @@
  /*
  *
  * TODO:
- * 1) Add Hero to its own object file.
- * 2) Add airplane wings to the hero that tilt as you turn left and right
- * 3) Control hero with mouse movement
- * 4) Add health to hero
- * 5) Display health in HUD
- * 6) Add viewport with top down view?
+ * 1) Add airplane wings to the hero that tilt as you turn left and right
+ * 2) Add health to hero
+ * 3) Display health in HUD
+ * 4) Add viewport with top down view?
  *
 */
 
@@ -60,6 +58,9 @@ bool gKeysPressed[256] = {false};
 
 GLuint* gSkyboxTextureHandles;
 vector<GLchar*> gSkyboxTextureNames;
+
+GLuint* gTrackTextureHandles;
+vector<GLchar*> gTrackTextureNames;
 
 Camera* gCamera = NULL;
 Map* gMap = NULL;
@@ -295,8 +296,6 @@ int main(int argc, char **argv) {
 
     // do some basic OpenGL setup
     initScene();
-
-    //LoadTextures();
 
     if (!LoadGameFile(argc, argv)) // Load config file containing map, texture names, etc.
         return(1);

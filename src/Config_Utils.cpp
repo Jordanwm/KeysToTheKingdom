@@ -10,6 +10,9 @@ using namespace std;
 extern GLuint* gSkyboxTextureHandles;
 extern vector<GLchar*> gSkyboxTextureNames;
 
+extern GLuint* gTrackTextureHandles;
+extern vector<GLchar*> gTrackTextureNames;
+
 /* 
  * LoadGameFile
  *
@@ -44,6 +47,8 @@ bool LoadGameFile(int argc, char **argv)
 
         if (line == ".SKYBOX")
             if(!(result = LoadSkybox(file))) PrintErrorMsg(FAIL_LOADING_SKYBOX);
+        if (line == ".TRACK_TEXTURE")
+            if(!(result = LoadTrackTexture(file))) PrintErrorMsg(FAIL_LOADING_TRACK_TEXTURE);
     }
 
     if (result)
@@ -114,6 +119,23 @@ bool LoadSkybox(ifstream &file)
     return true;
 }
 
+bool LoadTrackTexture(ifstream &file)
+{
+    printf("-> Loading Track Texture\n");
+
+    string line;
+    getline(file, line); 
+    string value = line.substr(2, string::npos);
+    char * S = new char[value.length() + 1];
+    std::strcpy(S,value.c_str());
+    gTrackTextureNames.push_back(S);
+
+    if (!LoadTextures(gTrackTextureHandles, gTrackTextureNames))
+        return false;
+
+    return true;
+}
+
 /* 
  * PrintErrorMsg
  *
@@ -134,6 +156,9 @@ void PrintErrorMsg(ErrorMsgs msg){
             break;
         case FAIL_LOADING_SKYBOX:
             err.append("Failed to load skybox textures");
+            break;
+        case FAIL_LOADING_TRACK_TEXTURE:
+            err.append("Failed to load track texture");
             break;
     }
 

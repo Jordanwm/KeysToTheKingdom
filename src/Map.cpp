@@ -13,8 +13,13 @@
 #include <iostream>
 #include <cmath>
 
+#include "Texture_Utils.h"
+
 #define DEBUG_CREATE_CORNERS 0
 #define DEBUG_ANGLE_OF_TURNS 0
+
+extern GLuint* gTrackTextureHandles;
+extern vector<GLchar*> gTrackTextureNames;
 
 using namespace std;
 
@@ -201,14 +206,19 @@ void Map::Update()
 
 void Map::Draw()
 {
+	glEnable(GL_TEXTURE_2D);
+	BindTexture(0, gTrackTextureHandles);
+
 	double WidthOfTrack = 5;
 
 	glBegin(GL_QUADS);
 	glColor3f(1,1,1);
 	Point p;
+
 	for (int i = 0; i < _Points.size() - 1; ++i)
 	{
 		Vector heading = *_Points[i+1] - *_Points[i];
+		double dist = heading.mag();
 		heading.normalize();
 		Vector normal = cross(heading, Vector(0,1,0));
 		normal.normalize();
@@ -217,25 +227,33 @@ void Map::Draw()
 		Point corner = normal * WidthOfTrack/2.0 + p;
 		corner = -1 * heading * WidthOfTrack/2.0 + corner;
 		glNormal3f(0,1,0);
+		glTexCoord2f(0,0);
 		corner.glVertex();
 		
 		corner = -1 * normal * WidthOfTrack/2.0 + p;
 		corner = -1 * heading * WidthOfTrack/2.0 + corner;
 		glNormal3f(0,1,0);
+		glTexCoord2f(WidthOfTrack, 0);
 		corner.glVertex();
+
 
 		p = *_Points[i+1];
 		corner = -1 * normal * WidthOfTrack/2.0 + p;
 		corner = -1 * heading * WidthOfTrack/2.0 + corner;
 		glNormal3f(0,1,0);
+		glTexCoord2f(WidthOfTrack, dist + WidthOfTrack);
 		corner.glVertex();
 		
 		corner = normal * WidthOfTrack/2.0 + p;
 		corner = -1 * heading * WidthOfTrack/2.0 + corner;
 		glNormal3f(0,1,0);
+		glTexCoord2f(0, dist + WidthOfTrack);
 		corner.glVertex();
 	}
 	glEnd();
+	
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_TEXTURE_2D);
 
 	if (false){ // Draw Heading
 		glColor3f(0, 1, 0);
