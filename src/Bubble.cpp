@@ -13,12 +13,14 @@
 #include <stdlib.h>
 #include <math.h>
 
-Bubble::Bubble(float a, float b) {
-	x = a; 
-	z = b;
-	rotation = 0;
-	float ran = (rand() % 41 + 80) / 100;
-	y = ran;
+Bubble::Bubble(double x, double z) {
+	_X = x; 
+	_Y = 0;
+	_Z = z;
+
+	//rotation = 0;
+	//float ran = (rand() % 41 + 80) / 100;
+	//y = ran;
 	/*int random = (rand() % 2);
 	if (random == 1) {
 		up = true;
@@ -28,19 +30,12 @@ Bubble::Bubble(float a, float b) {
 	}*/
 }
 
-void Bubble::draw() {
-	//glTranslatef(x, y, z);
-	glRotatef(rotation, 0, 1, 0);
-	glPushMatrix(); {		
-		glColor3f(.11, .97, .36);
-		//glutWireTorus(0.74, 0.75, 5, 30);	
-		glBegin(GL_LINE_STRIP);
-		for (double i = 0; i < 2 * M_PI; i = i + (M_PI / 50)) {
-			glVertex3f(0, cos(i) / 4 * 3, sin(i) / 4 * 3);
-		}
-		glEnd();
-	}; glPopMatrix();
-
+void Bubble::Draw() {
+	glPushMatrix(); {
+		glTranslatef(_X, _Y, _Z);		
+		glColor4f(.11, .97, .36, 0.5);
+        glutSolidSphere(0.75, 60, 60);
+    }; glPopMatrix();
 }
 
 void Bubble::evolve() {
@@ -64,16 +59,4 @@ void Bubble::evolve() {
 	//	yChange = .05;
 	//}
 
-}
-
-void Bubble::setX(float a) {
-	x = a;
-}
-
-void Bubble::setY(float a) {
-	y = a;
-}
-
-void Bubble::setZ(float a) {
-	z = a;
 }

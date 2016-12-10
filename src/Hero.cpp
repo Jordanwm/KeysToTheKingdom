@@ -109,7 +109,6 @@ void Plane::DrawBody() {
     //Main body
     glPushMatrix(); {
         glScalef(1.2, 1, 2.5);
-        //glutSolidCube(1);
         glTranslatef(0, 0, -0.5);
         cylinder = gluNewQuadric();
         gluCylinder(cylinder, 0.5f, 0.5f, 1.0f, 60, 60);
@@ -119,7 +118,6 @@ void Plane::DrawBody() {
     glPushMatrix(); {
         glScalef(1.2, 1, 2);
         glTranslatef(0, 0, 1.0);
-        //glutSolidCube(1);
         glTranslatef(0, 0, -0.5);
         glutSolidSphere(0.5, 60,60);
 
@@ -136,7 +134,6 @@ void Plane::DrawBody() {
     glPushMatrix(); {
         glScalef(1.2, 1, 1);
         glTranslatef(0, 0, -0.7);
-        //glutSolidCube(1);
         glTranslatef(0, 0, -0.5);
         glutSolidSphere(0.5, 60,60);
     } glPopMatrix();
@@ -145,7 +142,6 @@ void Plane::DrawBody() {
     glColor3ub(20,20,20);
     glPushMatrix(); {
         glScalef(1.2, 1, -2.5);
-        //glutSolidCube(1);
         glTranslatef(0, 0, 0);
         cylinder = gluNewQuadric();
         gluCylinder(cylinder, 0.1f, 0.1f, 0.8f, 60, 60);

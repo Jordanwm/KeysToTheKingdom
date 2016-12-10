@@ -17,6 +17,7 @@ class Map {
     double _Length;
     double _CurrentProgress;
     double _Distance;
+    double _WidthOfTrack;
 	//Point nextLocation;
 	//Vector nextHeading;
 	//bool isFuture;
@@ -30,6 +31,11 @@ public:
 
     Vector getHeading(){return _Heading;}
     void setHeading(Vector h){_Heading = h;}
+
+    double getWidthOfTrack(){return _WidthOfTrack;}
+    double getNumPointsOnTrack(){return _Points.size();}
+
+    Point getPointAtIndex(int i);
 
     double getProgress(){return _CurrentProgress;}
 

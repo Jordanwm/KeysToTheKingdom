@@ -174,9 +174,12 @@ bool LoadTrackShaders(ifstream &file)
         files.push_back(S);
     }
 
-    if ((trackShaderHandle = createShaderProgram(files[0], files[1])) == NULL)
+    if ((trackShaderHandle = createShaderProgram(files[0], files[1])) == 0)
         return false;
 
+    /*if (trackShaderHandle != 0)
+        printf("%s\n", "----> Successfully Compiled Shader");*/
+    
     trackProgress = glGetUniformLocation( trackShaderHandle, "trackProgress" );
 
     return true;

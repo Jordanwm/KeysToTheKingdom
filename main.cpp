@@ -27,7 +27,7 @@
 #include <iostream>
 #include <vector>
 
-#include "Bubble.h"
+#include "BubbleSystem.h"
 #include "Camera.h"
 #include "Map.h"
 #include "Skybox.h"
@@ -61,9 +61,7 @@ Camera* gCamera = NULL;
 Map* gMap = NULL;
 Skybox* gSkybox = NULL;
 Hero* gHero = NULL;
-
-vector< Bubble* > bubbles;
-float trackWidth = 5.0;
+BubbleSystem* gBubbleSystem = NULL;
 
 Point planeLocation;
 
@@ -160,13 +158,8 @@ void renderScene(void)  {
     if (gHero)
         gHero->Draw();
 
-	for (unsigned int i = 0; i < bubbles.size(); i++) {
-		bubbles[i]->evolve();
-		glPushMatrix();
-		glTranslatef(bubbles[i]->getX(), 0, bubbles[i]->getZ());
-		bubbles[i]->draw();
-		glPopMatrix();
-	}
+    if (gBubbleSystem)
+        gBubbleSystem->Draw();
 
     //push the back buffer to the screen
     glutSwapBuffers();
@@ -295,20 +288,8 @@ void updateScene(int value){
         gHero->Update();
     }
 
-	//10% of the time, a new bubble will spawn 16 units down the track from the current place.
-	/*if ((rand() % 10) == 1) {
-		gMap->setFuture();
-		if (gMap->future()) {
-			double dist = ((rand() % 351) - 175) / 100;
-			bubbles.push_back(new Bubble((gMap->getFutureLocation().getX()) + (dist * (-1 * (gMap->getFutureHeading().getZ()))), (gMap->getFutureLocation().getZ()) + (gMap->getFutureHeading().getX())));
-		}
-		
-	}*/
-	bool yes = true;
-	if (yes) {
-		bubbles.push_back(new Bubble((float)50, (float)0));
-		yes = false;
-	}
+    if (gBubbleSystem)
+        gBubbleSystem->Draw();
     
     glutPostRedisplay();
 
@@ -368,6 +349,10 @@ int main(int argc, char **argv) {
 
     if (!LoadGameFile(argc, argv)) // Load config file containing map, texture names, etc.
         return(1);
+
+    // Need map generated before doing bubble system.
+    if (gMap)
+        gBubbleSystem = new BubbleSystem();
 
     if (DEBUG_MAIN_LOOP)
         cout << "Entering Main Loop" << endl;

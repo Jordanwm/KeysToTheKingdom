@@ -5,11 +5,13 @@
 #include "Bubble.h"
 
 class BubbleSystem{
-	std::vector<Bubble> _Bubbles;
+	std::vector<Bubble*> _Bubbles;
 
 public:
 	BubbleSystem();
 
+	void Update();
+	void Draw();
 };
 
 #endif 

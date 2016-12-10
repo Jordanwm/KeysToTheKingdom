@@ -1,23 +1,21 @@
 #pragma once
 
 class Bubble {
-
-public:
-	Bubble();
-	Bubble(float a, float b);
-	void evolve();
-	void draw();
-	float getX() { return x; }
-	void setX(float a);
-	void setY(float a);
-	void setZ(float a);
-	float getY() { return y; }
-	float getZ() { return z; }
+	double _X, _Y, _Z, yChange;
 	bool up;
 	float rotation;
 
-private:
-	float x, y, z, yChange;
+public:
+	Bubble();
+	Bubble(double x, double b);
+	void evolve();
+	void Draw();
 
+	void setX(double x){_X = x;}
+	void setY(double y){_Y = y;}
+	void setZ(double z){_Z = z;}
+	double getX() { return _X; }
+	double getY() { return _Y; }
+	double getZ() { return _Z; }
 };
 

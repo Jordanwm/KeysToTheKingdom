@@ -27,6 +27,7 @@ using namespace std;
 Map::Map()
 {
 	_IndexInPoints = 1;
+	_WidthOfTrack = 5;
     Point* p1 = new Point(0,0,0);
     _Points.push_back(p1);
     Point* p2 = new Point(100,0,0);
@@ -44,7 +45,8 @@ Map::Map(vector<Point*> pts)
 {
 	//isFuture = true;
 	_IndexInPoints = 1;
-    
+    _WidthOfTrack = 5;
+
     if (pts.size() > 1){
     	_Points = pts;
     } else {
@@ -66,6 +68,11 @@ Map::Map(vector<Point*> pts)
     }
 
     CreateRoundedCorners();
+}
+
+Point Map::getPointAtIndex(int i){
+    if (_Points.size() > i) return *(_Points[i]);
+    else return Point();
 }
 
 void Map::CreateRoundedCorners()
@@ -208,8 +215,6 @@ void Map::Draw()
 	glEnable(GL_TEXTURE_2D);
 	BindTexture(0, gTrackTextureHandles);
 
-	double WidthOfTrack = 5;
-
 	glBegin(GL_QUADS);
 	glColor3f(1,1,1);
 	Point p;
@@ -223,30 +228,30 @@ void Map::Draw()
 		normal.normalize();
 
 		p = *_Points[i];
-		Point corner = normal * WidthOfTrack/2.0 + p;
-		corner = -1 * heading * WidthOfTrack/2.0 + corner;
+		Point corner = normal * _WidthOfTrack/2.0 + p;
+		corner = -1 * heading * _WidthOfTrack/2.0 + corner;
 		glNormal3f(0,1,0);
 		glTexCoord2f(0,0);
 		corner.glVertex();
 		
-		corner = -1 * normal * WidthOfTrack/2.0 + p;
-		corner = -1 * heading * WidthOfTrack/2.0 + corner;
+		corner = -1 * normal * _WidthOfTrack/2.0 + p;
+		corner = -1 * heading * _WidthOfTrack/2.0 + corner;
 		glNormal3f(0,1,0);
-		glTexCoord2f(WidthOfTrack, 0);
+		glTexCoord2f(_WidthOfTrack, 0);
 		corner.glVertex();
 
 
 		p = *_Points[i+1];
-		corner = -1 * normal * WidthOfTrack/2.0 + p;
-		corner = -1 * heading * WidthOfTrack/2.0 + corner;
+		corner = -1 * normal * _WidthOfTrack/2.0 + p;
+		corner = -1 * heading * _WidthOfTrack/2.0 + corner;
 		glNormal3f(0,1,0);
-		glTexCoord2f(WidthOfTrack, dist + WidthOfTrack);
+		glTexCoord2f(_WidthOfTrack, dist + _WidthOfTrack);
 		corner.glVertex();
 		
-		corner = normal * WidthOfTrack/2.0 + p;
-		corner = -1 * heading * WidthOfTrack/2.0 + corner;
+		corner = normal * _WidthOfTrack/2.0 + p;
+		corner = -1 * heading * _WidthOfTrack/2.0 + corner;
 		glNormal3f(0,1,0);
-		glTexCoord2f(0, dist + WidthOfTrack);
+		glTexCoord2f(0, dist + _WidthOfTrack);
 		corner.glVertex();
 	}
 	glEnd();
