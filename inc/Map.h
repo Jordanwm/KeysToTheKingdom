@@ -18,9 +18,6 @@ class Map {
     double _CurrentProgress;
     double _Distance;
     double _WidthOfTrack;
-	//Point nextLocation;
-	//Vector nextHeading;
-	//bool isFuture;
 
 public:
     Map();

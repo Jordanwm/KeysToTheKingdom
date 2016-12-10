@@ -35,11 +35,16 @@ BubbleSystem::BubbleSystem()
 			index = length - 2;
 
 		Vector Dist = gMap->getPointAtIndex(index + 1) - gMap->getPointAtIndex(index);
+		double maxd = Dist.mag();
 
 		RandPositionInBetweenPoints = getRand() * Dist.mag();
 		Dist.normalize();
 
-		Point pos = gMap->getPointAtIndex(index) + Dist * RandPositionInBetweenPoints;
+		Vector d = Dist * RandPositionInBetweenPoints;
+		if (index == length - 1 && d.mag() < maxd - widthOfTrack )
+			d -= widthOfTrack * 2 * Dist;
+
+		Point pos = gMap->getPointAtIndex(index) + d;
 
 		Vector norm = cross(Dist, Vector(0,1,0));
 		norm.normalize();
