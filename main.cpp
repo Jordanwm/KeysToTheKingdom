@@ -517,6 +517,7 @@ void updateScene(int value){
             gMap->Update();
 
             // Update progress for color in fragment shader
+            trackProgress = glGetUniformLocation( trackShaderHandle, "trackProgress" );
             glUseProgram(trackShaderHandle);
             glUniform1f(trackProgress, gMap->getProgress());
             glUseProgram(0);
