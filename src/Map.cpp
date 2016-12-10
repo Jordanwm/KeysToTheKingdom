@@ -12,11 +12,7 @@
 
 #include <iostream>
 #include <cmath>
-
-<<<<<<< HEAD
-=======
 #include "Texture_Utils.h"
->>>>>>> d434dca4c312bc8cf4d40714a177773d1305dd7c
 
 #define DEBUG_CREATE_CORNERS 0
 #define DEBUG_ANGLE_OF_TURNS 0
@@ -27,14 +23,6 @@ extern vector<GLchar*> gTrackTextureNames;
 extern GLuint trackShaderHandle;
 
 using namespace std;
-
-/*
- *
- * TODO: 
- * 1) Add Texture to road in Draw function
- * 2) Add more details to road?
- *
-*/
 
 Map::Map()
 {

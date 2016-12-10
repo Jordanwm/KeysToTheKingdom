@@ -17,20 +17,26 @@
 ##    0 - if compiling at home
 ##
 ## Finally, set the flags for which
-## libraries you are using and want to
+## libraries are using and want to
 ## compile against.
 ########################################
 
 TARGET = fp
-OBJECTS = main.o src/Point.o src/PointBase.o src/Vector.o src/Matrix.o src/Camera.o src/Texture_Utils.o src/Config_Utils.o src/Skybox.o src/Map.o src/Hero.o src/Bubble.o
+OBJECTS = main.o src/Point.o src/PointBase.o src/Vector.o src/Matrix.o src/Camera.o src/Texture_Utils.o src/Config_Utils.o src/Shader_Utils.o src/Skybox.o src/Map.o src/Hero.o src/Bubble.o
 
 LOCAL_INC_PATH = /opt/local/include
 LOCAL_LIB_PATH = /opt/local/lib
 LOCAL_BIN_PATH = /opt/local/bin
 
-BUILDING_IN_LAB = 1
+ifeq ($(OS), Windows_NT)
+	BUILDING_IN_LAB = 1
+else
+	BUILDING_IN_LAB = 0
+endif
 
-USING_GLEW = 0
+USING_GLEW = 1
+USING_GLUI = 0
+USING_OPENAL = 0
 USING_OPENGL = 1
 USING_SOIL = 1
 
@@ -40,13 +46,25 @@ USING_SOIL = 1
 ##
 ## !!!STOP!!!
 ## THERE IS NO NEED TO MODIFY ANYTHING BELOW THIS LINE
-## IT WILL WORK FOR YOU.  TRUST ME
+## IT WILL WORK FOR YOU
+
+
+
+
 
 #############################
 ## COMPILING INFO
 #############################
 
-CXX    = C:/Strawberry/c/bin/g++.exe
+ifeq ($(OS), Windows_NT)
+	ifeq ($(BUILDING_IN_LAB), 1)
+		CXX = C:/Strawberry/c/bin/g++.exe
+	else
+		CXX = g++
+	endif
+else
+	CXX    = g++
+endif
 CFLAGS = -Wall -g -w
 
 INCPATH += -I./inc
@@ -67,6 +85,44 @@ ifeq ($(BUILDING_IN_LAB), 0)
     endif
 endif
 
+ifeq ($(OS), Windows_NT)
+	RM = del
+else
+	RM = rm
+endif
+
+#############################
+## SETUP GLUI
+##      We must link against
+##  GLUI before we link against
+##  GLUT.
+##
+##     If you want to build
+##  on your own machine, you
+##  need to change the
+##  appropriate paths.
+#############################
+
+# if we are using GLUI in this program
+ifeq ($(USING_GLUI), 1)
+    # Windows Lab builds
+    ifeq ($(OS), Windows_NT)
+        INCPATH += -I$(LAB_INC_PATH)
+        LIBPATH += -L$(LAB_LIB_PATH)
+
+    # Non-Windows build
+    else
+        INCPATH += -I$(LOCAL_INC_PATH)
+        LIBPATH += -L$(LOCAL_LIB_PATH)
+    endif
+
+    LIBS += -lglui
+endif
+
+#############################
+## SETUP SOIL 
+#############################
+
 # if we are using SOIL in this program
 ifeq ($(USING_SOIL), 1)
     # Windows builds
@@ -77,7 +133,7 @@ ifeq ($(USING_SOIL), 1)
     else ifeq ($(shell uname), Darwin)
         INCPATH += -I$(LOCAL_INC_PATH)
         LIBPATH += -L$(LOCAL_LIB_PATH)
-	LIBS += -framework CoreFoundation	
+	LIBS += -framework CoreFoundation
     # Linux
     else
         INCPATH += -I$(LOCAL_INC_PATH)
@@ -95,8 +151,8 @@ endif
 ifeq ($(USING_OPENGL), 1)
     # Windows builds
     ifeq ($(OS), Windows_NT)
-        INCPATH += -I$(LAB_INC_PATH)
-        LIBPATH += -L$(LAB_LIB_PATH)
+        INCPATH += -IC:/Strawberry/c/include/
+        LIBPATH += -LC:/Strawberry/c/lib/
         LIBS += -lglut -lopengl32 -lglu32
 
     # Mac builds
@@ -108,8 +164,6 @@ ifeq ($(USING_OPENGL), 1)
         LIBS += -lglut -lGL -lGLU
     endif
 endif
-
-
 
 #############################
 ## SETUP GLEW 
@@ -136,16 +190,47 @@ else
 endif
 
 #############################
+## SETUP OpenAL & ALUT
+#############################
+
+# if we are using OpenAL & GLUT in this program
+ifeq ($(USING_OPENAL), 1)
+    # Windows builds
+    ifeq ($(OS), Windows_NT)
+        INCPATH += -I$(LAB_INC_PATH)
+        LIBPATH += -L$(LAB_LIB_PATH)
+        LIBS += -lalut.dll -lOpenAL32.dll
+		WINDOWS_AL = 1
+
+    # Mac builds
+    else ifeq ($(shell uname), Darwin)
+        INCPATH += -I$(LOCAL_INC_PATH)
+        LIBPATH += -L$(LOCAL_LIB_PATH)
+        LIBS += -framework OpenAL
+		WINDOWS_AL = 0
+
+    # Linux and all other builds
+    else
+        INCPATH += -I$(LOCAL_INC_PATH)
+        LIBPATH += -L$(LOCAL_LIB_PATH)
+        LIBS += -lalut -lopenal
+		WINDOWS_AL = 0
+    endif
+else
+	WINDOWS_AL = 0
+endif
+
+#############################
 ## COMPILATION INSTRUCTIONS 
 #############################
 
 all: $(TARGET)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET)
+	$(RM) -f $(OBJECTS) $(TARGET)
 
 depend:
-	rm -f Makefile.bak
+	$(RM) -f Makefile.bak
 	mv Makefile Makefile.bak
 	sed '/^# DEPENDENCIES/,$$d' Makefile.bak > Makefile
 	echo '# DEPENDENCIES' >> Makefile

@@ -10,16 +10,6 @@
  *
  */
 
- /*
- *
- * TODO:
- * 1) Add airplane wings to the hero that tilt as you turn left and right
- * 2) Add health to hero
- * 3) Display health in HUD
- * 4) Add viewport with top down view?
- *
-*/
-
 #include <GL/glew.h>
 
 #ifdef __APPLE__            // if compiling on Mac OS
