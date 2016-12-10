@@ -233,6 +233,9 @@ void mouseMotion(int x, int y) {
     planeLocation = planeLocation + ((mousex)*xproportion) * right;
     planeLocation = planeLocation + ((mousey)*0.03) * heading;
 
+    cout << (dot(planeLocation, right) << endl;
+        
+
     // Update wing rotation if strafing
     Vector movement = oldLocation - planeLocation;
     ((Plane*)gHero)->setWingRotation(25 * dot(right, movement));
