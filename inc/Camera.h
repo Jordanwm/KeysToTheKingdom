@@ -16,6 +16,7 @@ public:
 	Camera(Point lookAt, Point location);
 
 	virtual bool IsArcBall(){return false;}
+	virtual bool IsTopDown(){return false;}
 
 	Point getLookAt(){ return _LookAt; }
 	void setLookAt(Point p){ _LookAt = p; }
@@ -52,6 +53,19 @@ public:
 	
 	double getTheta(){ return _Theta; }
 	void setTheta(double t){ _Theta = t; }
+
+	void Recompute();
+	void Update();
+};
+
+class TopDown : public Camera {
+	double _Radius;
+public:
+	TopDown();
+
+	bool IsTopDown(){return true;}
+
+	void setUpVec(Vector v) {_UpVec = v;}
 
 	void Recompute();
 	void Update();

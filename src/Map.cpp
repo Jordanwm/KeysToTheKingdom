@@ -293,13 +293,14 @@ void Map::Draw()
 void Map::DrawFinishLine(){
 	Vector heading, normal;
 	double dist;
+	Point corner;
 	Point p;
 
 	glEnable(GL_TEXTURE_2D);
 	BindTexture(0, gTrackTextureHandles);
 
 	// The finish line!
-	glColor3f(0,0,1);
+	glColor3f(0,1,0);
 	glBegin(GL_QUADS);{
 		heading = *_Points[_Points.size() - 1] - *_Points[_Points.size() - 2];
 		heading.normalize();
@@ -307,7 +308,7 @@ void Map::DrawFinishLine(){
 		normal.normalize();
 
 		p = *_Points[_Points.size() - 1];
-		Point corner = normal * _WidthOfTrack/2.0 + p;
+		corner = normal * _WidthOfTrack/2.0 + p;
 		corner = -1 * heading * _WidthOfTrack/2.0 + corner;
 		glNormal3f(0,1,0);
 		glTexCoord2f(0,0);
@@ -332,6 +333,34 @@ void Map::DrawFinishLine(){
 		glTexCoord2f(0, _WidthOfTrack);
 		corner.glVertex();
 	}glEnd();
+
+	glPushMatrix();
+		glColor3f(0,1,0);
+		corner = -1 * normal * _WidthOfTrack/2.0 + p;
+		corner = -1 * heading * _WidthOfTrack/2.0 + corner;
+		corner.glTranslate();
+		glutSolidCube(1);
+	glPopMatrix();	
+	glPushMatrix();
+		corner = normal * _WidthOfTrack/2.0 + p;
+		corner = -1 * heading * _WidthOfTrack/2.0 + corner;
+		corner.glTranslate();
+		glutSolidCube(1);
+	glPopMatrix();
+	p = *_Points[_Points.size() - 1];
+	glPushMatrix();
+		glColor3f(0,1,0);
+		corner = -1 * normal * _WidthOfTrack/2.0 + p;
+		corner = -1 * heading * _WidthOfTrack/2.0 + corner;
+		corner.glTranslate();
+		glutSolidCube(1);
+	glPopMatrix();	
+	glPushMatrix();
+		corner = normal * _WidthOfTrack/2.0 + p;
+		corner = -1 * heading * _WidthOfTrack/2.0 + corner;
+		corner.glTranslate();
+		glutSolidCube(1);
+	glPopMatrix();
 	
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_TEXTURE_2D);

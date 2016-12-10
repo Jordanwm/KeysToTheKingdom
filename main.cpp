@@ -14,9 +14,6 @@
  *
  * Alternative camera view
  * Second shader
- * Second light
- * winners box/ end of game
- * death scene
  *
  */
 
@@ -106,14 +103,13 @@ void initScene()  {
     glEnable(GL_DEPTH_TEST);
 
     float lightCol[4] = { 1, 1, 1, 1};
-    float ambientCol[4] = { 0.2, 0.2, 0.2, 1.0 };
-    float lPosition[4] = { 10, 10, 10, 1 };
+    float ambientCol[4] = { 0.1, 0.1, 0.1, 0.1 };
+    float lPosition[4] = { 0, 100, 0, 1 };
     glLightfv( GL_LIGHT0, GL_POSITION,lPosition );
     glLightfv( GL_LIGHT0, GL_DIFFUSE,lightCol );
     glLightfv( GL_LIGHT0, GL_AMBIENT, ambientCol );
     glEnable( GL_LIGHTING );
     glEnable( GL_LIGHT0 );
-    glDisable( GL_LIGHT0 );
     
     // This is our spotlight
     glEnable( GL_LIGHT1 );
@@ -372,6 +368,12 @@ void normalKeysDown(unsigned char key, int x, int y) {
     if(key == 'r' || key == 'R')
         RestartGame();
 
+    if (key == '1' && !(displayWinnerScreen || displayLoserScreen))
+        gCamera = new ArcBall();
+
+    if (key == '2' && !(displayWinnerScreen || displayLoserScreen))
+        gCamera = new TopDown();
+
     gKeysPressed[key] = true;
 
     glutPostRedisplay(); // redraw our scene from our new camera POV
@@ -416,7 +418,7 @@ void mouseMotion(int x, int y) {
     
     if (gMap && gMap->getMapComplete() || gHero && gHero->isDead()){
         glutSetCursor(GLUT_CURSOR_LEFT_ARROW); 
-    } else {
+    } else if (gCamera->IsArcBall()){
         heading = gMap->getHeading();
 
         heading.normalize();
@@ -446,6 +448,29 @@ void mouseMotion(int x, int y) {
         // Update wing rotation if strafing
         Vector movement = oldLocation - planeLocation;
         ((Plane*)gHero)->setWingRotation(25 * dot(right, movement));
+    } else {
+        heading = gMap->getHeading();
+
+        heading.normalize();
+        Vector up(0,1,0);
+        Vector right = cross(heading, up);
+        right.normalize();
+
+        Point oldLocation = planeLocation;
+        planeLocation = Point();
+        planeLocation = planeLocation + ((mousex)*0.03) * right;
+        planeLocation = planeLocation + ((mousey)*0.03) * heading;
+
+        bool reached_bound = false;
+        if (gMap){
+            if (right.getX() == 1.0 && abs(planeLocation.getX()) > gMap->getWidthOfTrack()/2.0)
+                reached_bound = true;
+            if (right.getZ() == 1.0 && abs(planeLocation.getZ()) > gMap->getWidthOfTrack()/2.0)
+                reached_bound = true;
+        }
+
+        if (reached_bound)
+            planeLocation = oldLocation;
     }
 
     if(false && gLeftMouseButton == GLUT_DOWN && gCamera) {
@@ -481,6 +506,7 @@ void updateScene(int value){
         displayWinnerScreen = true;
 
     } else if (gHero && gHero->isDead()) {
+        gCamera->setLookAt(Point(gMap->getLocation().getX() + planeLocation.getX(), gMap->getLocation().getY(), gMap->getLocation().getZ() + planeLocation.getZ()));
         if (gCamera && gCamera->IsArcBall()){
             ((ArcBall*) gCamera)->setTheta(((ArcBall*) gCamera)->getTheta() + 0.01);
             gCamera->Recompute();
@@ -508,6 +534,8 @@ void updateScene(int value){
                 a *= -1;
 
             ((ArcBall*) gCamera)->setTheta(a + M_PI);
+        } else if (gCamera && gCamera->IsTopDown()){
+            ((TopDown*)gCamera)->setUpVec(gMap->getHeading());
         }
 
         if (gCamera){

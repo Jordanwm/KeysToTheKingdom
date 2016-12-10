@@ -61,3 +61,20 @@ void ArcBall::Update()
     	_LookAt.getX(), _LookAt.getY(), _LookAt.getZ(),
     	_UpVec.getX(), _UpVec.getY(), _UpVec.getZ());
 }
+
+TopDown::TopDown()
+	:Camera(Point(0.0, 0.0, 0.0), Point(0.0, 0.0, 0.0))
+{
+	_Radius = 20;
+}
+void TopDown::Recompute() 
+{
+	_Location = _LookAt;
+	_Location.setY(_Location.getY() + _Radius);
+}
+void TopDown::Update()
+{
+	gluLookAt(_Location.getX(), _Location.getY(), _Location.getZ(),
+    	_LookAt.getX(), _LookAt.getY(), _LookAt.getZ(),
+    	_UpVec.getX(), _UpVec.getY(), _UpVec.getZ());
+}
