@@ -38,12 +38,10 @@ Map::Map()
 
     _Heading = *_Points[_IndexInPoints] - *_Points[_IndexInPoints-1];
     _Heading.normalize();
-	//isFuture = true;
 }
 
 Map::Map(vector<Point*> pts)
 {
-	//isFuture = true;
 	_IndexInPoints = 1;
     _WidthOfTrack = 5;
 
@@ -102,7 +100,6 @@ void Map::CreateRoundedCorners()
 		v1.normalize();
 		v2.normalize();
 
-
 		Point Center1 = v1 * Radius + *_Points[i];
 		Point Center2 = v2 * Radius + *_Points[i];
 
@@ -120,7 +117,6 @@ void Map::CreateRoundedCorners()
 		Vector FromCenterToV1 = perpv1 - Center;
 		Point perpv2 = ActualRadius * v2 + *_Points[i];
 		Vector FromCenterToV2 = perpv2 - Center;
-
 
 		double startAngle = angle(Vector(0,0,1), FromCenterToV1);
 		double endAngle = angle(Vector(0,0,1), FromCenterToV2);
@@ -182,11 +178,8 @@ void Map::CreateRoundedCorners()
 void Map::MoveForward()
 {
 	double Speed = 0.1;
-
 	_CurrentLocation = _CurrentLocation + Speed * _Heading;
-
 	_Distance += (Speed * _Heading).mag();
-
 	_CurrentProgress = _Distance / _Length;
 }
 
@@ -212,6 +205,9 @@ void Map::Update()
 
 void Map::Draw()
 {
+	Vector heading, normal;
+	double dist;
+
 	glEnable(GL_TEXTURE_2D);
 	BindTexture(0, gTrackTextureHandles);
 
@@ -221,10 +217,10 @@ void Map::Draw()
 
 	for (int i = 0; i < _Points.size() - 1; ++i)
 	{
-		Vector heading = *_Points[i+1] - *_Points[i];
-		double dist = heading.mag();
+		heading = *_Points[i+1] - *_Points[i];
+		dist = heading.mag();
 		heading.normalize();
-		Vector normal = cross(heading, Vector(0,1,0));
+		normal = cross(heading, Vector(0,1,0));
 		normal.normalize();
 
 		p = *_Points[i];
@@ -240,7 +236,6 @@ void Map::Draw()
 		glTexCoord2f(_WidthOfTrack, 0);
 		corner.glVertex();
 
-
 		p = *_Points[i+1];
 		corner = -1 * normal * _WidthOfTrack/2.0 + p;
 		corner = -1 * heading * _WidthOfTrack/2.0 + corner;
@@ -255,9 +250,6 @@ void Map::Draw()
 		corner.glVertex();
 	}
 	glEnd();
-	
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glDisable(GL_TEXTURE_2D);
 
 	if (false){ // Draw Heading
 		glColor3f(0, 1, 0);
@@ -298,34 +290,49 @@ void Map::Draw()
 	}
 }
 
-//To get where the map is farther along to place bubbles in advance.
-//void Map::setFuture() {
-//	Vector newHeading;
-//	Point newLocation;
-//	int newIndexInPoints = _IndexInPoints;
-//	if (_CurrentLocation == *_PointsWithRoundedCorners[newIndexInPoints] && _PointsWithRoundedCorners.size() - 1 > newIndexInPoints) {
-//		newLocation = *_PointsWithRoundedCorners[newIndexInPoints];
-//		++newIndexInPoints;
-//		newHeading = *_PointsWithRoundedCorners[newIndexInPoints] - *_PointsWithRoundedCorners[newIndexInPoints - 1];
-//		newHeading.normalize();
-//		//Now 1 ahead.
-//		for (int j = 0; j < 15; j++) {
-//			if (newLocation == *_PointsWithRoundedCorners[newIndexInPoints] && _PointsWithRoundedCorners.size() - 1 > newIndexInPoints) {
-//				newLocation = *_PointsWithRoundedCorners[newIndexInPoints];
-//				++newIndexInPoints;
-//				newHeading = *_PointsWithRoundedCorners[newIndexInPoints] - *_PointsWithRoundedCorners[newIndexInPoints - 1];
-//				newHeading.normalize();
-//				if (j == 14) {
-//					nextHeading = newHeading;
-//					nextLocation = newLocation;
-//				}
-//			}
-//			else {
-//				isFuture = false;
-//			}
-//		}
-//	}
-//	else {
-//		isFuture = false;
-//	}
-//}/
+void Map::DrawFinishLine(){
+	Vector heading, normal;
+	double dist;
+	Point p;
+
+	glEnable(GL_TEXTURE_2D);
+	BindTexture(0, gTrackTextureHandles);
+
+	// The finish line!
+	glColor3f(0,0,1);
+	glBegin(GL_QUADS);{
+		heading = *_Points[_Points.size() - 1] - *_Points[_Points.size() - 2];
+		heading.normalize();
+		normal = cross(heading, Vector(0,1,0));
+		normal.normalize();
+
+		p = *_Points[_Points.size() - 1];
+		Point corner = normal * _WidthOfTrack/2.0 + p;
+		corner = -1 * heading * _WidthOfTrack/2.0 + corner;
+		glNormal3f(0,1,0);
+		glTexCoord2f(0,0);
+		corner.glVertex();
+		
+		corner = -1 * normal * _WidthOfTrack/2.0 + p;
+		corner = -1 * heading * _WidthOfTrack/2.0 + corner;
+		glNormal3f(0,1,0);
+		glTexCoord2f(_WidthOfTrack, 0);
+		corner.glVertex();
+
+		p = p + heading * _WidthOfTrack * 2;
+		corner = -1 * normal * _WidthOfTrack/2.0 + p;
+		corner = -1 * heading * _WidthOfTrack/2.0 + corner;
+		glNormal3f(0,1,0);
+		glTexCoord2f(_WidthOfTrack, _WidthOfTrack);
+		corner.glVertex();
+		
+		corner = normal * _WidthOfTrack/2.0 + p;
+		corner = -1 * heading * _WidthOfTrack/2.0 + corner;
+		glNormal3f(0,1,0);
+		glTexCoord2f(0, _WidthOfTrack);
+		corner.glVertex();
+	}glEnd();
+	
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_TEXTURE_2D);
+}

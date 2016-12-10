@@ -10,6 +10,17 @@
  *
  */
 
+/*
+ *
+ * Alternative camera view
+ * Second shader
+ * Second light
+ * winners box/ end of game
+ * death scene
+ *
+ */
+
+
 #include <GL/glew.h>
 
 #ifdef __APPLE__            // if compiling on Mac OS
@@ -66,11 +77,13 @@ BubbleSystem* gBubbleSystem = NULL;
 
 Point planeLocation;
 double maxHealth;
+vector<Point*> points;
 
 double getRand() {
     return rand() / (double)RAND_MAX;
 }
 
+void RestartGame();
 void resizeWindow(int w, int h) {
     aspectRatio = w / (float)h;
 
@@ -227,11 +240,13 @@ void renderScene(void)  {
         cout << "Drawing Map" << endl;
     
     glUseProgram(trackShaderHandle);
-
     if (gMap)
         gMap->Draw();
-
     glUseProgram(0);
+
+    if (gMap)
+        gMap->DrawFinishLine();
+
     if (gHero)
         gHero->Draw();
 
@@ -251,6 +266,9 @@ void normalKeysDown(unsigned char key, int x, int y) {
 
     if(key == 'q' || key == 'Q' || key == 27)
         exit(0);
+
+    if(key == 'r' || key == 'R')
+        RestartGame();
 
     gKeysPressed[key] = true;
 
@@ -294,36 +312,39 @@ void mouseMotion(int x, int y) {
     // X moves side to side
     Vector heading;
     
-    if (gMap)
+    if (gMap && gMap->getMapComplete()){
+        glutSetCursor(GLUT_CURSOR_LEFT_ARROW); 
+    } else {
         heading = gMap->getHeading();
 
-    heading.normalize();
-    Vector up(0,1,0);
-    Vector right = cross(heading, up);
-    right.normalize();
+        heading.normalize();
+        Vector up(0,1,0);
+        Vector right = cross(heading, up);
+        right.normalize();
 
-    double xproportion = 0.015;
-    xproportion = ((double(windowHeight - y) / windowHeight)+0.3) * 0.015;
-    
-    Point oldLocation = planeLocation;
-    planeLocation = Point();
-    planeLocation = planeLocation + ((mousex)*xproportion) * right;
-    planeLocation = planeLocation + ((mousey)*0.03) * heading;
+        double xproportion = 0.015;
+        xproportion = ((double(windowHeight - y) / windowHeight)+0.3) * 0.015;
+        
+        Point oldLocation = planeLocation;
+        planeLocation = Point();
+        planeLocation = planeLocation + ((mousex)*xproportion) * right;
+        planeLocation = planeLocation + ((mousey)*0.03) * heading;
 
-    bool reached_bound = false;
-    if (gMap){
-        if (right.getX() == 1.0 && abs(planeLocation.getX()) > gMap->getWidthOfTrack()/2.0)
-            reached_bound = true;
-        if (right.getZ() == 1.0 && abs(planeLocation.getZ()) > gMap->getWidthOfTrack()/2.0)
-            reached_bound = true;
+        bool reached_bound = false;
+        if (gMap){
+            if (right.getX() == 1.0 && abs(planeLocation.getX()) > gMap->getWidthOfTrack()/2.0)
+                reached_bound = true;
+            if (right.getZ() == 1.0 && abs(planeLocation.getZ()) > gMap->getWidthOfTrack()/2.0)
+                reached_bound = true;
+        }
+
+        if (reached_bound)
+            planeLocation = oldLocation;
+
+        // Update wing rotation if strafing
+        Vector movement = oldLocation - planeLocation;
+        ((Plane*)gHero)->setWingRotation(25 * dot(right, movement));
     }
-
-    if (reached_bound)
-        planeLocation = oldLocation;
-
-    // Update wing rotation if strafing
-    Vector movement = oldLocation - planeLocation;
-    ((Plane*)gHero)->setWingRotation(25 * dot(right, movement));
 
     if(false && gLeftMouseButton == GLUT_DOWN && gCamera) {
         if (gCtrlDown && gCamera->IsArcBall()) {
@@ -346,41 +367,49 @@ void updateScene(int value){
     if (DEBUG_MAIN_LOOP)
         cout << "Updating Scene" << endl;
 
-    if (gMap){
-        gMap->Update();
+    if (gMap && gMap->getMapComplete()){
+        // We won the game, slowly rotate around hero
+        if (gCamera && gCamera->IsArcBall()){
+            ((ArcBall*) gCamera)->setTheta(((ArcBall*) gCamera)->getTheta() + 0.01);
+            gCamera->Recompute();
+        }
+    } else {
+        if (gMap){
+            gMap->Update();
 
-        // Update progress for color in fragment shader
-        glUseProgram(trackShaderHandle);
-        glUniform1f(trackProgress, gMap->getProgress());
-        glUseProgram(0);
+            // Update progress for color in fragment shader
+            glUseProgram(trackShaderHandle);
+            glUniform1f(trackProgress, gMap->getProgress());
+            glUseProgram(0);
+        }
+
+        if (gCamera && gCamera->IsArcBall()){
+            Vector heading = gMap->getHeading();
+            Vector positiveX(1,0,0);
+
+            Vector c = cross(heading, positiveX);
+            double a = angle(heading, positiveX);
+
+            // Angle is actually negative, angle returns abs value
+            if (c.getY() < 0)
+                a *= -1;
+
+            ((ArcBall*) gCamera)->setTheta(a + M_PI);
+        }
+
+        if (gCamera){
+            gCamera->setLookAt(gMap->getLocation());
+            gCamera->Recompute();
+        }
+
+        if (gHero){
+            gHero->setLocation(Point(gMap->getLocation().getX() + planeLocation.getX(), gMap->getLocation().getY(), gMap->getLocation().getZ() + planeLocation.getZ()));
+            gHero->Update();
+        }
+
+        if (gBubbleSystem)
+            gBubbleSystem->Update();
     }
-
-    if (gCamera && gCamera->IsArcBall()){
-        Vector heading = gMap->getHeading();
-        Vector positiveX(1,0,0);
-
-        Vector c = cross(heading, positiveX);
-        double a = angle(heading, positiveX);
-
-        // Angle is actually negative, angle returns abs value
-        if (c.getY() < 0)
-            a *= -1;
-
-        ((ArcBall*) gCamera)->setTheta(a + M_PI);
-    }
-
-    if (gCamera){
-        gCamera->setLookAt(gMap->getLocation());
-        gCamera->Recompute();
-    }
-
-    if (gHero){
-        gHero->setLocation(Point(gMap->getLocation().getX() + planeLocation.getX(), gMap->getLocation().getY(), gMap->getLocation().getZ() + planeLocation.getZ()));
-        gHero->Update();
-    }
-
-    if (gBubbleSystem)
-        gBubbleSystem->Update();
     
     glutPostRedisplay();
 
@@ -388,6 +417,26 @@ void updateScene(int value){
 
     if (DEBUG_MAIN_LOOP)
         cout << "Done Updating Scene" << endl;
+}
+
+void RestartGame(){
+    delete gCamera;
+    delete gSkybox;
+    delete gHero;
+    delete gMap;
+    delete gBubbleSystem;
+
+    gCamera = new ArcBall();
+    gSkybox = new Skybox();
+    gHero = new Plane();
+    gMap = new Map(points);
+
+    // Need map generated before doing bubble system.
+    if (gMap){
+        gBubbleSystem = new BubbleSystem();
+        maxHealth = gMap->getLength() / 0.2;
+        gHero->setHealth(maxHealth);
+    }
 }
 
 int main(int argc, char **argv) {
@@ -439,7 +488,7 @@ int main(int argc, char **argv) {
     initScene();
 
     if (!LoadGameFile(argc, argv)) // Load config file containing map, texture names, etc.
-        return(1);
+        return true;
 
     // Need map generated before doing bubble system.
     if (gMap){

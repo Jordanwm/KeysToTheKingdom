@@ -31,24 +31,18 @@ public:
 
     double getWidthOfTrack(){return _WidthOfTrack;}
     double getNumPointsOnTrack(){return _Points.size();}
-
     Point getPointAtIndex(int i);
-
     double getProgress(){return _CurrentProgress;}
+    bool getMapComplete(){return _MapComplete;}
 
     void CreateRoundedCorners();
     void MoveForward();
 
     void Draw();
+    void DrawFinishLine();
     void Update();
 
 	double getLength() { return _Length; }
-	//void setFuture();
-	//Point getFutureLocation() { return nextLocation; }
-	//Vector getFutureHeading() { return nextHeading; }
-	//bool future() { return isFuture; }
-
-	
 };
 
 #endif

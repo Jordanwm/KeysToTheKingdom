@@ -82,12 +82,12 @@ bool LoadGameFile(int argc, char **argv)
     return result;
 }
 
+extern vector<Point*> points;
 bool LoadMapPoints(ifstream &file)
 {
     printf("-> Loading Map\n");
     int NumberOfPoints = 0;
     vector<float> floats;
-    vector<Point*> points;
 
     // Get number of points
     getFloatsFromFile(file, floats);
