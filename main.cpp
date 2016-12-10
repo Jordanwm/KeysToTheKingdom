@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <iostream>
+#include <cmath>
 #include <vector>
 
 #include "BubbleSystem.h"
@@ -226,15 +227,23 @@ void mouseMotion(int x, int y) {
     right.normalize();
 
     double xproportion = 0.015;
-    xproportion = ((double(windowHeight - y) / windowHeight)+0.2) * 0.015;
+    xproportion = ((double(windowHeight - y) / windowHeight)+0.3) * 0.015;
     
     Point oldLocation = planeLocation;
     planeLocation = Point();
     planeLocation = planeLocation + ((mousex)*xproportion) * right;
     planeLocation = planeLocation + ((mousey)*0.03) * heading;
 
-    cout << (dot(planeLocation, right) << endl;
-        
+    bool reached_bound = false;
+    if (gMap){
+        if (right.getX() == 1.0 && abs(planeLocation.getX()) > gMap->getWidthOfTrack()/2.0)
+            reached_bound = true;
+        if (right.getZ() == 1.0 && abs(planeLocation.getZ()) > gMap->getWidthOfTrack()/2.0)
+            reached_bound = true;
+    }
+
+    if (reached_bound)
+        planeLocation = oldLocation;
 
     // Update wing rotation if strafing
     Vector movement = oldLocation - planeLocation;
