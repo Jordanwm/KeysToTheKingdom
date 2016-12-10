@@ -15,6 +15,8 @@ class Map {
     Point _CurrentLocation;
     Vector _Heading;
     double _Length;
+    double _CurrentProgress;
+    double _Distance;
 	//Point nextLocation;
 	//Vector nextHeading;
 	//bool isFuture;
@@ -28,6 +30,8 @@ public:
 
     Vector getHeading(){return _Heading;}
     void setHeading(Vector h){_Heading = h;}
+
+    double getProgress(){return _CurrentProgress;}
 
     void CreateRoundedCorners();
     void MoveForward();

@@ -177,6 +177,10 @@ void Map::MoveForward()
 	double Speed = 0.1;
 
 	_CurrentLocation = _CurrentLocation + Speed * _Heading;
+
+	_Distance += (Speed * _Heading).mag();
+
+	_CurrentProgress = _Distance / _Length;
 }
 
 void Map::Update()

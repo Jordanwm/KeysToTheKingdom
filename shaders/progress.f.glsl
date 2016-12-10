@@ -13,6 +13,7 @@ varying vec3 halfwayVec;
 varying float attenuation;
 
 uniform sampler2D tex;
+uniform float trackProgress;
 
 void main(void) 
 {
@@ -30,10 +31,16 @@ void main(void)
 
     // compute the ambient component of lighting
     vec4 ambientComponent;
+    vec4 progressColor;
+    progressColor.r = (1 - trackProgress);
+    progressColor.g = trackProgress;
+    progressColor.b = 0.0;
+    progressColor.a = 1.0;
+    
     if( gl_FrontFacing )
-        ambientComponent = gl_FrontMaterial.ambient * gl_LightSource[0].ambient;
+        ambientComponent = progressColor * gl_LightSource[0].ambient;
     else
-        ambientComponent = gl_BackMaterial.ambient * gl_LightSource[0].ambient;
+        ambientComponent = progressColor * gl_LightSource[0].ambient;
 
     // compute the diffuse component of lighting
     vec4 diffuseComponent;
@@ -71,5 +78,5 @@ void main(void)
     float af = theColor.a;
 
     // compute the modulated resulting color
-    gl_FragColor = vec4( ct * cf, at * af );
+    gl_FragColor = vec4( ct * cf, 0.6 );
 }

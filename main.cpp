@@ -22,8 +22,6 @@
     #include <GL/glu.h>
 #endif
 
-//#include "SOIL/SOIL.h"
-
 #include <stdlib.h>
 #include <time.h>
 #include <iostream>
@@ -57,6 +55,7 @@ GLuint* gTrackTextureHandles;
 vector<GLchar*> gTrackTextureNames;
 
 GLuint trackShaderHandle;
+GLuint trackProgress;
 
 Camera* gCamera = NULL;
 Map* gMap = NULL;
@@ -108,6 +107,9 @@ void initScene()  {
     glShadeModel(GL_FLAT);
 
     srand( time(NULL) );    // seed our random number generator
+
+    glEnable( GL_BLEND );
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     gCtrlDown = false;
     gCamera = new ArcBall();
@@ -248,8 +250,13 @@ void updateScene(int value){
     if (DEBUG_MAIN_LOOP)
         cout << "Updating Scene" << endl;
 
-    if (gMap)
+    if (gMap){
         gMap->Update();
+        glUseProgram(trackShaderHandle);
+        glUniform1f(trackProgress, gMap->getProgress());
+        glUseProgram(0);
+        cout << gMap->getProgress() << endl;
+    }
 
     if (gCamera && gCamera->IsArcBall()){
         Vector heading = gMap->getHeading();

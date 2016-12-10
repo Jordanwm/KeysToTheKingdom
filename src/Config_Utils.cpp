@@ -30,6 +30,7 @@ extern GLuint* gTrackTextureHandles;
 extern vector<GLchar*> gTrackTextureNames;
 
 extern GLuint trackShaderHandle;
+extern GLuint trackProgress;
 
 /* 
  * LoadGameFile
@@ -175,6 +176,8 @@ bool LoadTrackShaders(ifstream &file)
 
     if ((trackShaderHandle = createShaderProgram(files[0], files[1])) == NULL)
         return false;
+
+    trackProgress = glGetUniformLocation( trackShaderHandle, "trackProgress" );
 
     return true;
 }
