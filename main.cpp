@@ -289,7 +289,7 @@ void updateScene(int value){
     }
 
     if (gBubbleSystem)
-        gBubbleSystem->Draw();
+        gBubbleSystem->Update();
     
     glutPostRedisplay();
 

@@ -1,14 +1,18 @@
 #pragma once
 
 class Bubble {
+	static const double _MaxHeight = 0.5;
+	static const double _MinHeight = 0;
+
 	double _X, _Y, _Z, yChange;
-	bool up;
+	bool _up;
 	float rotation;
 
 public:
 	Bubble();
 	Bubble(double x, double b);
-	void evolve();
+	
+	void Update();
 	void Draw();
 
 	void setX(double x){_X = x;}

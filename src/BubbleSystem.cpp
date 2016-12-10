@@ -51,7 +51,8 @@ BubbleSystem::BubbleSystem()
 }
 
 void BubbleSystem::Update(){
-
+	for (int i = 0; i < _Bubbles.size(); ++i)
+		_Bubbles[i]->Update();
 }
 void BubbleSystem::Draw(){
 	for (int i = 0; i < _Bubbles.size(); ++i)

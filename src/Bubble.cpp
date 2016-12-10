@@ -12,22 +12,14 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include <iostream>
+
+extern double getRand();
 
 Bubble::Bubble(double x, double z) {
 	_X = x; 
-	_Y = 0;
+	_Y = getRand() * (_MaxHeight - _MinHeight) + _MinHeight;
 	_Z = z;
-
-	//rotation = 0;
-	//float ran = (rand() % 41 + 80) / 100;
-	//y = ran;
-	/*int random = (rand() % 2);
-	if (random == 1) {
-		up = true;
-	}
-	else {
-		up = false;
-	}*/
 }
 
 void Bubble::Draw() {
@@ -38,25 +30,16 @@ void Bubble::Draw() {
     }; glPopMatrix();
 }
 
-void Bubble::evolve() {
-	rotation = rotation + 250;
-	//if (up && y <= 1.1) {
-	//	//y = y + 0.05;
-	//	yChange = .05;
-	//}
-	//else if (up && y > 1.1) {
-	//	up = false;
-	//	//y = y - 0.05;
-	//	yChange = -.05;
-	//}
-	//else if (!up && y >= 0.9) {
-	//	//y = y - 0.05;
-	//	yChange = -.05;
-	//}
-	//else {
-	//	up = true;
-	//	//y = y + 0.05;
-	//	yChange = .05;
-	//}
+void Bubble::Update() {
+	double speed = 0.01;
 
+	if (_up)
+		_Y += speed;
+	else 
+		_Y -= speed;
+
+	if (_Y > _MaxHeight)
+		_up = false;
+	if (_Y < _MinHeight)
+		_up = true;
 }
