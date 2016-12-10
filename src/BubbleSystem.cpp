@@ -9,6 +9,8 @@ extern double getRand();
 extern Map* gMap;
 extern Hero* gHero;
 
+extern double maxHealth;
+
 BubbleSystem::BubbleSystem()
 {
 	int numberOfBubbles = 10;
@@ -63,8 +65,10 @@ void BubbleSystem::Update(){
 
 		if (gHero){
 			Vector dist = gHero->getLocation() - _Bubbles[i]->getLocation();
-			if (dist.mag() < 0.75)
-				gHero->incrementHealth(2); 
+			int bonus = 2;
+			if (dist.mag() < 1.25)
+				if (gHero->getHealth() < maxHealth - bonus)
+					gHero->incrementHealth(bonus); 
 		}	
 	}
 }

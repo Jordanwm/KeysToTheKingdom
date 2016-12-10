@@ -65,6 +65,7 @@ Hero* gHero = NULL;
 BubbleSystem* gBubbleSystem = NULL;
 
 Point planeLocation;
+double maxHealth;
 
 double getRand() {
     return rand() / (double)RAND_MAX;
@@ -123,6 +124,77 @@ void initScene()  {
     gHero = new Plane();
 }
 
+void renderHealthHUD() {
+    glDisable(GL_LIGHTING);
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0.0, windowWidth, 0.0, windowHeight);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    double percentage = gHero->getHealth() / maxHealth;
+    int centerx = windowWidth / 2;
+    int overallWidth = 200;
+    int overallHeight = 15;
+    vector<Point> squarePercentage, square;
+    square.push_back(Point(centerx - overallWidth/2.0, windowHeight-overallHeight - 2, 0.0));
+    square.push_back(Point(centerx - overallWidth/2.0, windowHeight - 2, 0.0));
+    square.push_back(Point(centerx + overallWidth/2.0, windowHeight - 2, 0.0));
+    square.push_back(Point(centerx + overallWidth/2.0, windowHeight-overallHeight - 2, 0.0));
+
+    overallWidth -= 4;
+    overallHeight -= 4;
+    squarePercentage.push_back(Point(centerx - overallWidth/2.0, windowHeight-overallHeight - 4, 0.0));
+    squarePercentage.push_back(Point(centerx - overallWidth/2.0, windowHeight - 4, 0.0));
+    squarePercentage.push_back(Point(centerx + overallWidth/2.0 - (1-percentage)*overallWidth, windowHeight - 4, 0.0));
+    squarePercentage.push_back(Point(centerx + overallWidth/2.0 - (1-percentage)*overallWidth, windowHeight-overallHeight - 4, 0.0));
+
+    double red = (1-percentage);
+    double green = percentage;
+
+    glColor3f(red, green, 0.0);
+
+    glPushMatrix();
+    glBegin(GL_QUADS);
+        squarePercentage[0].glVertex();
+        squarePercentage[1].glVertex();
+        squarePercentage[2].glVertex();
+        squarePercentage[3].glVertex();
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glLineWidth(1);
+    glBegin(GL_LINES);
+        square[0].glVertex();
+        square[1].glVertex();
+        
+        square[1].glVertex();
+        square[2].glVertex();
+        
+        square[2].glVertex();
+        square[3].glVertex();
+
+        square[0].glVertex();
+        square[3].glVertex();
+    glEnd();
+    glPopMatrix();
+
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+
+    glMatrixMode(GL_MODELVIEW);
+
+    glEnable(GL_LIGHTING);
+}
+
 void renderScene(void)  {
     if (DEBUG_MAIN_LOOP)
         cout << "Rendering Scene" << endl;
@@ -139,6 +211,10 @@ void renderScene(void)  {
         cout << "Updating Camera" << endl;
     if (gCamera)
         gCamera->Update();
+
+    glPushMatrix();{
+        renderHealthHUD();
+    }glPopMatrix();
 
     glPushMatrix();
         if (gMap)
@@ -368,7 +444,8 @@ int main(int argc, char **argv) {
     // Need map generated before doing bubble system.
     if (gMap){
         gBubbleSystem = new BubbleSystem();
-        gHero->setHealth(gMap->getLength() / 0.2);
+        maxHealth = gMap->getLength() / 0.2;
+        gHero->setHealth(maxHealth);
     }
 
     if (DEBUG_MAIN_LOOP)

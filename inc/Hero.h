@@ -19,7 +19,7 @@ public:
 	void setHealth(double h){ _Health = h; }
 	void incrementHealth(double h){_Health += h;}
 
-	bool isDead(){return _Health < 0;}
+	bool isDead(){return _Health <= 0;}
 
 	virtual void Draw() = 0;
 	virtual void Update() = 0;
