@@ -7,12 +7,19 @@
 class Hero {
 protected:
 	Point _Location;
+	double _Health;
 
 public:
 	Hero();
 
 	Point getLocation(){ return _Location; }
 	void setLocation(Point p){ _Location = p; }
+
+	double getHealth(){ return _Health; }
+	void setHealth(double h){ _Health = h; }
+	void incrementHealth(double h){_Health += h;}
+
+	bool isDead(){return _Health < 0;}
 
 	virtual void Draw() = 0;
 	virtual void Update() = 0;

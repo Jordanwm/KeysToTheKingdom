@@ -366,8 +366,10 @@ int main(int argc, char **argv) {
         return(1);
 
     // Need map generated before doing bubble system.
-    if (gMap)
+    if (gMap){
         gBubbleSystem = new BubbleSystem();
+        gHero->setHealth(gMap->getLength() / 0.2);
+    }
 
     if (DEBUG_MAIN_LOOP)
         cout << "Entering Main Loop" << endl;

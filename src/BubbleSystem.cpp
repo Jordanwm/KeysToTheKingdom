@@ -1,11 +1,13 @@
 #include "BubbleSystem.h"
 #include "Map.h"
+#include "Hero.h"
 #include "cmath"
 
 #include <iostream>
 
 extern double getRand();
 extern Map* gMap;
+extern Hero* gHero;
 
 BubbleSystem::BubbleSystem()
 {
@@ -41,7 +43,7 @@ BubbleSystem::BubbleSystem()
 		Dist.normalize();
 
 		Vector d = Dist * RandPositionInBetweenPoints;
-		if (index == length - 1 && d.mag() < maxd - widthOfTrack )
+		if (d.mag() > maxd - widthOfTrack )
 			d -= widthOfTrack * 2 * Dist;
 
 		Point pos = gMap->getPointAtIndex(index) + d;
@@ -56,8 +58,15 @@ BubbleSystem::BubbleSystem()
 }
 
 void BubbleSystem::Update(){
-	for (int i = 0; i < _Bubbles.size(); ++i)
+	for (int i = 0; i < _Bubbles.size(); ++i){
 		_Bubbles[i]->Update();
+
+		if (gHero){
+			Vector dist = gHero->getLocation() - _Bubbles[i]->getLocation();
+			if (dist.mag() < 0.75)
+				gHero->incrementHealth(2); 
+		}	
+	}
 }
 void BubbleSystem::Draw(){
 	for (int i = 0; i < _Bubbles.size(); ++i)

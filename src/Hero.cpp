@@ -30,6 +30,10 @@ Plane::Plane()
 extern Map* gMap;
 void Plane::Update()
 {
+    _Health--;
+
+    cout << _Health << endl;
+
     prop_rotation += 10;
     Vector dir(0,0,1);
     if (gMap){

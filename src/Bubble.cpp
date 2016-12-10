@@ -17,14 +17,14 @@
 extern double getRand();
 
 Bubble::Bubble(double x, double z) {
-	_X = x; 
-	_Y = getRand() * (_MaxHeight - _MinHeight) + _MinHeight;
-	_Z = z;
+	_Location = Point(x, 
+		getRand() * (_MaxHeight - _MinHeight) + _MinHeight,
+		z);
 }
 
 void Bubble::Draw() {
 	glPushMatrix(); {
-		glTranslatef(_X, _Y, _Z);		
+		_Location.glTranslate();		
 		glColor4f(.11, .97, .36, 0.5);
         glutSolidSphere(0.75, 60, 60);
     }; glPopMatrix();
@@ -34,12 +34,12 @@ void Bubble::Update() {
 	double speed = 0.01;
 
 	if (_up)
-		_Y += speed;
+		_Location.setY(_Location.getY() + speed);
 	else 
-		_Y -= speed;
+		_Location.setY(_Location.getY() - speed);
 
-	if (_Y > _MaxHeight)
+	if (_Location.getY() > _MaxHeight)
 		_up = false;
-	if (_Y < _MinHeight)
+	if (_Location.getY() < _MinHeight)
 		_up = true;
 }
