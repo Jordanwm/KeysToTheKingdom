@@ -78,5 +78,5 @@ void main(void)
     float af = theColor.a;
 
     // compute the modulated resulting color
-    gl_FragColor = vec4( ct * cf, 0.6 );
+    gl_FragColor = vec4( ct * cf, 0.4 );
 }

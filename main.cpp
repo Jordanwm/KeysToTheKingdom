@@ -252,10 +252,11 @@ void updateScene(int value){
 
     if (gMap){
         gMap->Update();
+
+        // Update progress for color in fragment shader
         glUseProgram(trackShaderHandle);
         glUniform1f(trackProgress, gMap->getProgress());
         glUseProgram(0);
-        cout << gMap->getProgress() << endl;
     }
 
     if (gCamera && gCamera->IsArcBall()){
