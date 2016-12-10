@@ -90,13 +90,20 @@ void initScene()  {
     glEnable(GL_DEPTH_TEST);
 
     float lightCol[4] = { 1, 1, 1, 1};
-    float ambientCol[4] = { 0.6, 0.6, 0.6, 1.0 };
+    float ambientCol[4] = { 0.2, 0.2, 0.2, 1.0 };
     float lPosition[4] = { 10, 10, 10, 1 };
     glLightfv( GL_LIGHT0, GL_POSITION,lPosition );
     glLightfv( GL_LIGHT0, GL_DIFFUSE,lightCol );
     glLightfv( GL_LIGHT0, GL_AMBIENT, ambientCol );
     glEnable( GL_LIGHTING );
     glEnable( GL_LIGHT0 );
+    glDisable( GL_LIGHT0 );
+    
+    // This is our spotlight
+    glEnable( GL_LIGHT1 );
+    float diffuseCol1[4] = {1.0f, 1.0f, 1.0f, 1.0f };       
+    glLightfv( GL_LIGHT1, GL_DIFFUSE, diffuseCol1 );
+    glLightf( GL_LIGHT1, GL_SPOT_EXPONENT, 100 ); 
 
     // tell OpenGL not to use the material system; just use whatever we
     // pass with glColor*()

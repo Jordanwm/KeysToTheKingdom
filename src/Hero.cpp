@@ -122,7 +122,16 @@ void Plane::DrawBody() {
         //glutSolidCube(1);
         glTranslatef(0, 0, -0.5);
         glutSolidSphere(0.5, 60,60);
+
+        // Add our spotlight to the front of the plane
+        GLfloat pos[4] = {0, 0, 0, 1};
+        glLightfv( GL_LIGHT1, GL_POSITION, pos );
+        GLfloat dir[4] = {0, 0, 1, 0};
+        glLightfv( GL_LIGHT1, GL_SPOT_DIRECTION, dir );
+        glLightf( GL_LIGHT1, GL_SPOT_CUTOFF, 12 );
     } glPopMatrix();
+
+
     //Rear sphere
     glPushMatrix(); {
         glScalef(1.2, 1, 1);
