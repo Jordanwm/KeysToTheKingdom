@@ -74,9 +74,6 @@ void main(void)
     vec3 ct = texel.rgb;
     vec3 cf = theColor.rgb;
 
-    float at = texel.a;
-    float af = theColor.a;
-
     // compute the modulated resulting color
-    gl_FragColor = vec4( ct * cf, 0.4 );
+    gl_FragColor = vec4( ct * cf, 0.5 );
 }

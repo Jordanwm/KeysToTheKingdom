@@ -10,14 +10,6 @@
  *
  */
 
-/*
- *
- * Alternative camera view
- * Second shader
- *
- */
-
-
 #include <GL/glew.h>
 
 #ifdef __APPLE__            // if compiling on Mac OS
@@ -415,7 +407,7 @@ void mouseMotion(int x, int y) {
     // Y moves forward
     // X moves side to side
     Vector heading;
-    
+    glutSetCursor(GLUT_CURSOR_NONE);
     if (gMap && gMap->getMapComplete() || gHero && gHero->isDead()){
         glutSetCursor(GLUT_CURSOR_LEFT_ARROW); 
     } else if (gCamera->IsArcBall()){
