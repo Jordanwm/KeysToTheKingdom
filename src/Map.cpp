@@ -194,7 +194,7 @@ void Map::Update()
 	}
 	
 	// We have reached the end of the map!
-	if (_CurrentLocation == *_PointsWithRoundedCorners[_IndexInPoints] && _PointsWithRoundedCorners.size() - 1 == _IndexInPoints)
+	if (!_MapComplete && _CurrentLocation == *_PointsWithRoundedCorners[_IndexInPoints] && _PointsWithRoundedCorners.size() - 1 == _IndexInPoints)
 		_MapComplete = true;
 
 	if (!_MapComplete)

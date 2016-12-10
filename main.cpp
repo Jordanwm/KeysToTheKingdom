@@ -79,6 +79,9 @@ Point planeLocation;
 double maxHealth;
 vector<Point*> points;
 
+bool displayWinnerScreen = false;
+bool displayLoserScreen = false;
+
 double getRand() {
     return rand() / (double)RAND_MAX;
 }
@@ -208,6 +211,99 @@ void renderHealthHUD() {
     glEnable(GL_LIGHTING);
 }
 
+void renderEndingSequence() {
+    glDisable(GL_LIGHTING);
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0.0, windowWidth, 0.0, windowHeight);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    if (displayWinnerScreen){
+        glPushMatrix();
+        glColor3f(0,0,0);
+        glRasterPos2i(10, 30);
+        char* s = "You Win!";
+
+        void * font = GLUT_BITMAP_TIMES_ROMAN_24;
+        for (int i = 0; s[i] != '\0'; ++i)
+        {
+            glutBitmapCharacter(font, s[i]);
+        }
+        glPopMatrix();
+
+        glPushMatrix();
+        glColor3f(0,0,0);
+        glRasterPos2i(10, 10);
+        char* c = "(Press 'R' to Restart)";
+
+        font = GLUT_BITMAP_TIMES_ROMAN_10;
+        for (int i = 0; c[i] != '\0'; ++i)
+        {
+            glutBitmapCharacter(font, c[i]);
+        }
+        glPopMatrix();
+        
+        glPushMatrix();
+        glColor4f(0.0, 1.0, 0.0, 0.3);
+        glBegin(GL_QUADS);
+            glVertex2f(0.0, 0.0);
+            glVertex2f(0.0, windowHeight);
+            glVertex2f(windowWidth, windowHeight);
+            glVertex2f(windowWidth, 0.0);
+        glEnd();
+        glPopMatrix();
+    } else if (displayLoserScreen){
+        glPushMatrix();
+        glColor3f(0,0,0);
+        glRasterPos2i(10, 30);
+        char* s = "You Lose!";
+
+        void * font = GLUT_BITMAP_TIMES_ROMAN_24;
+        for (int i = 0; s[i] != '\0'; ++i)
+        {
+            glutBitmapCharacter(font, s[i]);
+        }
+        glPopMatrix();
+
+        glPushMatrix();
+        glColor3f(0,0,0);
+        glRasterPos2i(10, 10);
+        char* c = "(Press 'R' to Restart)";
+
+        font = GLUT_BITMAP_TIMES_ROMAN_10;
+        for (int i = 0; c[i] != '\0'; ++i)
+        {
+            glutBitmapCharacter(font, c[i]);
+        }
+        glPopMatrix();
+        
+        glPushMatrix();
+        glColor4f(1.0, 0.0, 0.0, 0.3);
+        glBegin(GL_QUADS);
+            glVertex2f(0.0, 0.0);
+            glVertex2f(0.0, windowHeight);
+            glVertex2f(windowWidth, windowHeight);
+            glVertex2f(windowWidth, 0.0);
+        glEnd();
+        glPopMatrix();
+    }
+
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+
+    glMatrixMode(GL_MODELVIEW);
+
+    glEnable(GL_LIGHTING);
+}
+
 void renderScene(void)  {
     if (DEBUG_MAIN_LOOP)
         cout << "Rendering Scene" << endl;
@@ -252,6 +348,12 @@ void renderScene(void)  {
 
     if (gBubbleSystem)
         gBubbleSystem->Draw();
+
+    glPushMatrix();
+    if (displayWinnerScreen || displayLoserScreen){
+        renderEndingSequence();
+    }
+    glPopMatrix();
 
     //push the back buffer to the screen
     glutSwapBuffers();
@@ -312,7 +414,7 @@ void mouseMotion(int x, int y) {
     // X moves side to side
     Vector heading;
     
-    if (gMap && gMap->getMapComplete()){
+    if (gMap && gMap->getMapComplete() || gHero && gHero->isDead()){
         glutSetCursor(GLUT_CURSOR_LEFT_ARROW); 
     } else {
         heading = gMap->getHeading();
@@ -373,6 +475,17 @@ void updateScene(int value){
             ((ArcBall*) gCamera)->setTheta(((ArcBall*) gCamera)->getTheta() + 0.01);
             gCamera->Recompute();
         }
+        if (gHero)
+            gHero->setLocation(Point(gMap->getLocation().getX(), gMap->getLocation().getY(), gMap->getLocation().getZ()));
+
+        displayWinnerScreen = true;
+
+    } else if (gHero && gHero->isDead()) {
+        if (gCamera && gCamera->IsArcBall()){
+            ((ArcBall*) gCamera)->setTheta(((ArcBall*) gCamera)->getTheta() + 0.01);
+            gCamera->Recompute();
+        }
+        displayLoserScreen = true;
     } else {
         if (gMap){
             gMap->Update();
@@ -420,6 +533,10 @@ void updateScene(int value){
 }
 
 void RestartGame(){
+    displayWinnerScreen = false;
+    displayLoserScreen = false;
+    planeLocation = Point();
+
     delete gCamera;
     delete gSkybox;
     delete gHero;
