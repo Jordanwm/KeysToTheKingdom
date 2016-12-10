@@ -224,10 +224,15 @@ void mouseMotion(int x, int y) {
     Vector up(0,1,0);
     Vector right = cross(heading, up);
     right.normalize();
-
+    
+    Point oldLocation = planeLocation;
     planeLocation = Point();
     planeLocation = planeLocation + ((mousex)*0.015) * right;
     planeLocation = planeLocation + ((mousey)*0.03) * heading;
+
+    // Update wing rotation if strafing
+    Vector movement = oldLocation - planeLocation;
+    ((Plane*)gHero)->setWingRotation(25 * movement.getZ());
 
     if(false && gLeftMouseButton == GLUT_DOWN && gCamera) {
         if (gCtrlDown && gCamera->IsArcBall()) {

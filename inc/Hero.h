@@ -19,7 +19,7 @@ public:
 };
 
 class Plane : public Hero {
-	double wheel_rotation;
+	double wing_rotation;
     double prop_rotation;
     double rotate_angle;
 
@@ -28,8 +28,8 @@ public:
 	void Draw();
 	void Update();
 
-	void setWheelRotation(double r){wheel_rotation = r;}
-	double getWheelRotation(){return wheel_rotation;}
+	void setWingRotation(double r){wing_rotation = r;}
+	double getWingRotation(){return wing_rotation;}
 
 	void setPropRotation(double r){prop_rotation = r;}
 	double getPropRotation(){return prop_rotation;}
@@ -39,7 +39,7 @@ public:
 
 // Helper Draw Functions
 	void DrawBody();
-	void DrawWheel();
+	void DrawWing();
 	void DrawProp();
 };
 

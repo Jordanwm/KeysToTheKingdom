@@ -22,7 +22,7 @@ Hero::Hero()
 Plane::Plane() 
 :Hero()
 {
-    wheel_rotation = 0.0;
+    wing_rotation = 0.0;
     prop_rotation = 0.0;
     rotate_angle = 0.0;
 }
@@ -57,37 +57,48 @@ void Plane::DrawProp() {
     } glPopMatrix();
 }
 
-void Plane::DrawWheel() {
-    GLUquadric *cylinder;
-    GLUquadric *disk;
+void Plane::DrawWing() {
+    
+    glPushMatrix();{
+        glBegin(GL_QUADS);{
+            // top
+            glVertex3f(0,0.1,0);
+            glVertex3f(0,0.1,2);
+            glVertex3f(1,0.1,0.25);
+            glVertex3f(1,0.1,0);
 
-    //Draw Tire
-    glColor3ub(50, 50, 50);
-    glPushMatrix(); {
-        cylinder = gluNewQuadric();
-        gluCylinder(cylinder, 0.5f, 0.5f, 0.25f, 15, 15);
+            // bottom
+            glVertex3f(0,-0.1,0);
+            glVertex3f(0,-0.1,2);
+            glVertex3f(1,-0.1,0.25);
+            glVertex3f(1,-0.1,0);
+
+            // Back Side
+            glVertex3f(0,-0.1,0);
+            glVertex3f(0,0.1,0);
+            glVertex3f(0,0.1,2);
+            glVertex3f(0,-0.1,2);
+
+            // left side
+            glVertex3f(1,-0.1,0);
+            glVertex3f(1,0.1,0);
+            glVertex3f(0,0.1,0);
+            glVertex3f(0,-0.1,0);
+
+            // front side
+            glVertex3f(1,-0.1,0.25);
+            glVertex3f(1,0.1,0.25);
+            glVertex3f(1,0.1,0);
+            glVertex3f(1,-0.1,0);
+
+            //right side
+            glVertex3f(0,-0.1,2);
+            glVertex3f(0,0.1,2);
+            glVertex3f(1,0.1,0.25);
+            glVertex3f(1,-0.1,0.25);
+
+        } glEnd();
     } glPopMatrix();
-
-    glPushMatrix(); {
-        disk = gluNewQuadric();
-        gluDisk(disk, 0, 0.5f, 15, 15);
-    } glPopMatrix();
-
-    glPushMatrix(); {
-        glTranslatef(0, 0, 0.25);
-        disk = gluNewQuadric();
-        gluDisk(disk, 0, 0.5f, 15, 15);
-    } glPopMatrix();
-
-
-    //Draw rim
-    glColor3f(255, 255, 255);
-    glPushMatrix(); {
-        glTranslatef(0, 0, -0.01f);
-        disk = gluNewQuadric();
-        gluDisk(disk, 0, 0.4f, 6, 6);
-    } glPopMatrix();
-
 }
 
 void Plane::DrawBody() {
@@ -101,15 +112,16 @@ void Plane::DrawBody() {
         //glutSolidCube(1);
         glTranslatef(0, 0, -0.5);
         cylinder = gluNewQuadric();
-        gluCylinder(cylinder, 0.5f, 0.5f, 1.0f, 15, 15);
+        gluCylinder(cylinder, 0.5f, 0.5f, 1.0f, 60, 60);
     } glPopMatrix();
+    
     //Front sphere
     glPushMatrix(); {
         glScalef(1.2, 1, 2);
         glTranslatef(0, 0, 1.0);
         //glutSolidCube(1);
         glTranslatef(0, 0, -0.5);
-        glutSolidSphere(0.5, 15,15);
+        glutSolidSphere(0.5, 60,60);
     } glPopMatrix();
     //Rear sphere
     glPushMatrix(); {
@@ -117,43 +129,39 @@ void Plane::DrawBody() {
         glTranslatef(0, 0, -0.7);
         //glutSolidCube(1);
         glTranslatef(0, 0, -0.5);
-        glutSolidSphere(0.5, 15,15);
+        glutSolidSphere(0.5, 60,60);
     } glPopMatrix();
-    //Rear Pop shaft
+    
+    //Rear Prop shaft
     glColor3ub(20,20,20);
     glPushMatrix(); {
         glScalef(1.2, 1, -2.5);
         //glutSolidCube(1);
         glTranslatef(0, 0, 0);
         cylinder = gluNewQuadric();
-        gluCylinder(cylinder, 0.1f, 0.1f, 0.8f, 15, 15);
+        gluCylinder(cylinder, 0.1f, 0.1f, 0.8f, 60, 60);
     } glPopMatrix();
-
 
     //Main upper cylinder
     glColor3ub(100, 100, 100);
     glPushMatrix(); {
         cylinder = gluNewQuadric();
         glTranslatef(0, 0.25, -1);
-        gluCylinder(cylinder, 0.5f, 0.5f, 1.0f, 15, 15);
+        gluCylinder(cylinder, 0.5f, 0.5f, 1.0f, 60, 60);
     } glPopMatrix();
+
     //Front upper cylinder
     glPushMatrix(); {
         cylinder = gluNewQuadric();
         glTranslatef(0, 0.25, 0);
-        gluCylinder(cylinder, 0.5f, 0.0f, 1.8f, 15, 15);
+        gluCylinder(cylinder, 0.5f, 0.0f, 1.8f, 60, 60);
     } glPopMatrix();
+
     //Rear upper cylinder
     glPushMatrix(); {
         cylinder = gluNewQuadric();
         glTranslatef(0, 0.25, -1.5);
-        gluCylinder(cylinder, 0.0f, 0.5f, 0.5f, 15, 15);
-    } glPopMatrix();
-
-    glPushMatrix(); {
-        glTranslatef(0,0, -2);
-        glRotatef(prop_rotation, 0, 0, 1);
-        DrawProp();
+        gluCylinder(cylinder, 0.0f, 0.5f, 0.5f, 60, 60);
     } glPopMatrix();
 }
 
@@ -178,67 +186,35 @@ void Plane::Draw()
     }
 
     glPushMatrix(); {
-
         _Location.glTranslate();
+        glTranslatef(0,0.25,0);
         glScalef(0.5, 0.5, 0.5);
         glRotatef(rotate_angle, 0, 1, 0);
         
-            //Draw body
+        //Draw body
         glPushMatrix(); {
             DrawBody();
         } glPopMatrix();
 
-        //Draw front axle
-        glColor3f(0,0, 255);
         glPushMatrix(); {
-            glRotatef(90, 0, 1, 0);
-            glTranslatef(-1, 0, -1);
-            GLUquadric *quadratic;
-            quadratic = gluNewQuadric();
-            gluCylinder(quadratic, 0.1f, 0.1f, 2.0f, 32, 32);
+            glTranslatef(0,0, -2);
+            glRotatef(prop_rotation, 0, 0, 1);
+            DrawProp();
         } glPopMatrix();
 
-        //Front left wheel
+        // Left Wing
         glPushMatrix(); {
-            glTranslatef(1, 0, 1);
-            glRotatef(270, 0, 1, 0);
-            glRotatef(-1 * wheel_rotation, 0, 0, 1);
-            DrawWheel();
+            glRotatef(wing_rotation, 1, 0, 0);
+            glTranslatef(.5,0,-1);
+            DrawWing();
         } glPopMatrix();
 
-        //Front right wheel
+        // Right Wing
         glPushMatrix(); {
-            glTranslatef(-1, 0, 1);
-            glRotatef(90, 0, 1, 0);
-            glRotatef(wheel_rotation, 0, 0, 1);
-            DrawWheel();
+            glRotatef(-wing_rotation, 1, 0, 0);
+            glScalef(-1,1,1);
+            glTranslatef(.5,0,-1);
+            DrawWing();
         } glPopMatrix();
-
-        //Draw rear axle
-        glColor3f(0,0, 255);
-        glPushMatrix(); {
-            glRotatef(90, 0, 1, 0);
-            glTranslatef(1, 0, -1);
-            GLUquadric *quadratic;
-            quadratic = gluNewQuadric();
-            gluCylinder(quadratic, 0.1f, 0.1f, 2.0f, 32, 32);
-        } glPopMatrix();
-
-        //Rear left wheel
-        glPushMatrix(); {
-            glTranslatef(1, 0, -1);
-            glRotatef(270, 0, 1, 0);
-            glRotatef(-1 * wheel_rotation, 0, 0, 1);
-            DrawWheel();
-        } glPopMatrix();
-
-        //Rear right wheel
-        glPushMatrix(); {
-            glTranslatef(-1, 0, -1);
-            glRotatef(90, 0, 1, 0);
-            glRotatef(wheel_rotation, 0, 0, 1);
-            DrawWheel();
-        } glPopMatrix();
-
     } glPopMatrix();
 }
