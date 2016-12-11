@@ -58,6 +58,9 @@ vector<GLchar*> gTrackTextureNames;
 GLuint trackShaderHandle;
 GLuint trackProgress;
 
+GLuint healthShaderHandle;
+GLuint timeLoc;
+
 Camera* gCamera = NULL;
 Map* gMap = NULL;
 Skybox* gSkybox = NULL;
@@ -159,8 +162,11 @@ void renderHealthHUD() {
 
     double red = (1-percentage);
     double green = percentage;
-
-    glColor3f(red, green, 0.0);
+	
+	if (percentage < .2 && !gHero->isDead() && !gMap->getMapComplete())
+		glUseProgram(healthShaderHandle);
+    
+	glColor3f(red, green, 0.0);
 
     glPushMatrix();
     glBegin(GL_QUADS);
@@ -187,6 +193,7 @@ void renderHealthHUD() {
         square[3].glVertex();
     glEnd();
     glPopMatrix();
+	glUseProgram(0);
 
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
@@ -509,9 +516,12 @@ void updateScene(int value){
             gMap->Update();
 
             // Update progress for color in fragment shader
-            trackProgress = glGetUniformLocation( trackShaderHandle, "trackProgress" );
             glUseProgram(trackShaderHandle);
-            glUniform1f(trackProgress, gMap->getProgress());
+            trackProgress = glGetUniformLocation( trackShaderHandle, "trackProgress" );
+            glUniform1f(trackProgress, gMap->getProgress());			
+			glUseProgram(healthShaderHandle);
+            timeLoc = glGetUniformLocation( healthShaderHandle, "time" );
+            glUniform1f(timeLoc, glutGet(GLUT_ELAPSED_TIME) / 100.0);
             glUseProgram(0);
         }
 

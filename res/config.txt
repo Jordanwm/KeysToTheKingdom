@@ -14,3 +14,6 @@
 .TRACK_SHADER
 ..shaders/progress.v.glsl
 ..shaders/progress.f.glsl
+.HEALTH_SHADER
+..shaders/LowHealth.v.glsl
+..shaders/LowHealth.f.glsl

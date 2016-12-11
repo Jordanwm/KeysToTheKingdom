@@ -17,8 +17,6 @@
 #include <string>
 #include <vector>
 
-
-
 #define DEBUG_LOAD 0
 
 using namespace std;
@@ -30,6 +28,7 @@ extern GLuint* gTrackTextureHandles;
 extern vector<GLchar*> gTrackTextureNames;
 
 extern GLuint trackShaderHandle;
+extern GLuint healthShaderHandle;
 
 /* 
  * LoadGameFile
@@ -70,7 +69,10 @@ bool LoadGameFile(int argc, char **argv)
             if(!(result = LoadTrackTexture(file))) PrintErrorMsg(FAIL_LOADING_TRACK_TEXTURE);
 
         if (line == ".TRACK_SHADER")
-            if(!(result = LoadTrackShaders(file))) PrintErrorMsg(FAIL_LOADING_TRACK_SHADER);            
+            if(!(result = LoadTrackShaders(file))) PrintErrorMsg(FAIL_LOADING_TRACK_SHADER);  
+		if (line == ".HEALTH_SHADER")
+            if(!(result = LoadHealthShaders(file))) PrintErrorMsg(FAIL_LOADING_HEALTH_SHADER);  
+		
     }
 
     if (result)
@@ -175,10 +177,26 @@ bool LoadTrackShaders(ifstream &file)
 
     if ((trackShaderHandle = createShaderProgram(files[0], files[1])) == 0)
         return false;
+    return true;
+}
 
-    /*if (trackShaderHandle != 0)
-        printf("%s\n", "----> Successfully Compiled Shader");*/
+bool LoadHealthShaders(ifstream &file)
+{
+    printf("-> Loading Health Shaders\n");
 
+    vector<char*> files;
+    int i = 0;
+    for (; i < 2 && !file.eof(); ++i) {
+        string line;
+        getline(file, line); 
+        string value = line.substr(2, string::npos);
+        char * S = new char[value.length() + 1];
+        strcpy(S,value.c_str());
+        files.push_back(S);
+    }
+
+    if ((healthShaderHandle = createShaderProgram(files[0], files[1])) == 0)
+        return false;
     return true;
 }
 
@@ -207,6 +225,9 @@ void PrintErrorMsg(ErrorMsgs msg){
             err.append("Failed to load track texture");
             break;
         case FAIL_LOADING_TRACK_SHADER:
+            err.append("Failed to load track shader");
+            break;
+		case FAIL_LOADING_HEALTH_SHADER:
             err.append("Failed to load track shader");
             break;
     }
