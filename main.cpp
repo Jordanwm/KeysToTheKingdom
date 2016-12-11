@@ -439,7 +439,7 @@ void mouseMotion(int x, int y) {
 
         // Update wing rotation if strafing
         Vector movement = oldLocation - planeLocation;
-        ((Plane*)gHero)->setWingRotation(25 * dot(right, movement));
+        ((Plane*)gHero)->setWingRotation(50 * dot(right, movement));
     } else {
         heading = gMap->getHeading();
 

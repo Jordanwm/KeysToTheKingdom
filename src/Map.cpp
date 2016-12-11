@@ -18,7 +18,7 @@
 #define DEBUG_ANGLE_OF_TURNS 0
 
 extern GLuint* gTrackTextureHandles;
-extern vector<GLchar*> gTrackTextureNames;
+extern vector<char*> gTrackTextureNames;
 
 extern GLuint trackShaderHandle;
 

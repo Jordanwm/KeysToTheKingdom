@@ -1,4 +1,7 @@
 #include "Shader_Utils.h"
+#include <cstring>
+
+using namespace std;
 
 void readTextFromFile(string filename, char* &output){
     string buf = string("");
@@ -9,7 +12,7 @@ void readTextFromFile(string filename, char* &output){
         buf += line + "\n";
     }
     output = new char[buf.length()+1];
-    strncpy(output, buf.c_str(), buf.length());
+    std::strncpy(output, buf.c_str(), buf.length());
     output[buf.length()] = '\0';
     
     in.close();

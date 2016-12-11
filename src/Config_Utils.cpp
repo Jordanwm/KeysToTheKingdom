@@ -149,7 +149,7 @@ bool LoadTrackTexture(ifstream &file)
     getline(file, line); 
     string value = line.substr(2, string::npos);
     char * S = new char[value.length() + 1];
-    std::strcpy(S,value.c_str());
+    strcpy(S,value.c_str());
     gTrackTextureNames.push_back(S);
 
     if (!LoadTextures(gTrackTextureHandles, gTrackTextureNames))
@@ -169,7 +169,7 @@ bool LoadTrackShaders(ifstream &file)
         getline(file, line); 
         string value = line.substr(2, string::npos);
         char * S = new char[value.length() + 1];
-        std::strcpy(S,value.c_str());
+        strcpy(S,value.c_str());
         files.push_back(S);
     }
 

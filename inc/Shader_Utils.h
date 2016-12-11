@@ -7,14 +7,13 @@
 
 #include <fstream>
 #include <string>
-using namespace std;
 
 // readTextFromFile() //////////////////////////////////////////////////////////////
 //
 //  Reads in a text file as a single string. Used to aid in shader loading.
 //
 ////////////////////////////////////////////////////////////////////////////////
-void readTextFromFile(string filename, char* &output);
+void readTextFromFile(std::string filename, char* &output);
 
 // printLog() //////////////////////////////////////////////////////////////////
 //
@@ -29,7 +28,7 @@ void printLog( GLuint handle );
 //  Compile a given shader program
 //
 ////////////////////////////////////////////////////////////////////////////////
-GLuint compileShader( string filename, GLenum shaderType );
+GLuint compileShader( std::string filename, GLenum shaderType );
 
 // createShaderProgram() ///////////////////////////////////////////////////////
 //
