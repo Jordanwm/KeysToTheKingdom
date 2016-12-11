@@ -4,6 +4,7 @@
 #include <vector>
 #include "Point.h"
 #include "Vector.h"
+#include "Bezier.h"
 
 using namespace std;
 

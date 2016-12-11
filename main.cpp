@@ -35,6 +35,7 @@
 #include "Hero.h"
 #include "Texture_Utils.h"
 #include "Config_Utils.h"
+#include "Bezier.h"
 
 #define DEBUG_MAIN_LOOP 0
 
@@ -310,6 +311,24 @@ void renderScene(void)  {
     //update the modelview matrix based on the camera's position
     glMatrixMode(GL_MODELVIEW);              //make sure we aren't changing the projection matrix!
     glLoadIdentity();
+
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+	
+	glDisable(GL_LIGHTING);
+	glPushMatrix();
+	glColor3f(1, 0, 0);
+	glLineWidth(2.0f);
+
+	glBegin(GL_LINE_STRIP);
+	glVertex3f(10, 3, 0);
+	glVertex3f(40, 3, 0);
+	glEnd();
+	glPopMatrix();
+
+	glEnable(GL_LIGHTING);
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
 
     if (DEBUG_MAIN_LOOP)
         cout << "Updating Camera" << endl;

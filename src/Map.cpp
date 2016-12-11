@@ -13,6 +13,7 @@
 #include <iostream>
 #include <cmath>
 #include "Texture_Utils.h"
+#include <vector>
 
 #define DEBUG_CREATE_CORNERS 0
 #define DEBUG_ANGLE_OF_TURNS 0
@@ -205,47 +206,65 @@ void Map::Update()
 
 void Map::Draw()
 {
+	//We have _Points.
+	vector<BezierCurve> track;
+	vector<Point> bezierPoints;
+
 	Vector heading, normal;
 	double dist;
 
-	glEnable(GL_TEXTURE_2D);
-	BindTexture(0, gTrackTextureHandles);
+	//Populate track.
+	for (int i = 0; i < _Points.size() - 1; i += 3) {
+		BezierCurve c(*_Points[i], *_Points[i + 1], *_Points[i + 2], *_Points[i + 3]);
+		track.push_back(c);
+	}
 
+	//Populate bezierPoints;
+	for (size_t j = 0; j < track.size(); j++) {
+		for (float k = 0; k < 1; k += 1 / (float)1000) {
+			Point p = track[j].Evaluate(k);
+			bezierPoints.push_back(p);
+			//p.print();
+		}
+	}
+
+	//cout << "Bezier points : " << bezierPoints.size() << endl;
+
+	//Draw everything.
 	glBegin(GL_QUADS);
-	glColor3f(1,1,1);
+	glColor3f(1, 1, 1);
 	Point p;
 
-	for (int i = 0; i < _Points.size() - 1; ++i)
-	{
-		heading = *_Points[i+1] - *_Points[i];
+	for (int i = 0; i < bezierPoints.size() - 1; ++i) {
+		heading = bezierPoints[i + 1] - bezierPoints[i];
 		dist = heading.mag();
 		heading.normalize();
-		normal = cross(heading, Vector(0,1,0));
+		normal = cross(heading, Vector(0, 1, 0));
 		normal.normalize();
 
-		p = *_Points[i];
-		Point corner = normal * _WidthOfTrack/2.0 + p;
-		corner = -1 * heading * _WidthOfTrack/2.0 + corner;
-		glNormal3f(0,1,0);
-		glTexCoord2f(0,0);
+		p = bezierPoints[i];
+		Point corner = normal * _WidthOfTrack / 2.0 + p;
+		corner = -1 * heading * _WidthOfTrack / 2.0 + corner;
+		glNormal3f(0, 1, 0);
+		glTexCoord2f(0, 0);
 		corner.glVertex();
-		
-		corner = -1 * normal * _WidthOfTrack/2.0 + p;
-		corner = -1 * heading * _WidthOfTrack/2.0 + corner;
-		glNormal3f(0,1,0);
+
+		corner = -1 * normal * _WidthOfTrack / 2.0 + p;
+		corner = -1 * heading * _WidthOfTrack / 2.0 + corner;
+		glNormal3f(0, 1, 0);
 		glTexCoord2f(_WidthOfTrack, 0);
 		corner.glVertex();
 
-		p = *_Points[i+1];
-		corner = -1 * normal * _WidthOfTrack/2.0 + p;
-		corner = -1 * heading * _WidthOfTrack/2.0 + corner;
-		glNormal3f(0,1,0);
+		p = bezierPoints[i + 1];
+		corner = -1 * normal * _WidthOfTrack / 2.0 + p;
+		corner = -1 * heading * _WidthOfTrack / 2.0 + corner;
+		glNormal3f(0, 1, 0);
 		glTexCoord2f(_WidthOfTrack, dist + _WidthOfTrack);
 		corner.glVertex();
-		
-		corner = normal * _WidthOfTrack/2.0 + p;
-		corner = -1 * heading * _WidthOfTrack/2.0 + corner;
-		glNormal3f(0,1,0);
+
+		corner = normal * _WidthOfTrack / 2.0 + p;
+		corner = -1 * heading * _WidthOfTrack / 2.0 + corner;
+		glNormal3f(0, 1, 0);
 		glTexCoord2f(0, dist + _WidthOfTrack);
 		corner.glVertex();
 	}
