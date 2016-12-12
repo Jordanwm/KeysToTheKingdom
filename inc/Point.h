@@ -12,6 +12,9 @@
 
 		// CONSTRUCTORS / DESTRUCTORS
 		Point();
+		double magSq();
+		double mag();
+		void normalize();
 
 		Point( int a, int b, int c );
 		Point( double a, double b, double c );

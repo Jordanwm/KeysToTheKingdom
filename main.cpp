@@ -77,6 +77,8 @@ map<double, double> locations;
 BezierCurve track;
 vector<Point> bezierPoints;
 
+double lastZ = 0;
+
 bool displayWinnerScreen = false;
 bool displayLoserScreen = false;
 
@@ -577,11 +579,15 @@ void updateScene(int value){
             gCamera->setLookAt(gMap->getLocation());
             gCamera->Recompute();
         }
+		
+		
 
         if (gHero){
-            gHero->setLocation(Point(gMap->getLocation().getX() + planeLocation.getX(), gMap->getLocation().getY(), gMap->getLocation().getZ() + planeLocation.getZ()));
 			if (locations.find((double)floor((gMap->getLocation().getX() + planeLocation.getX()) * 10) / 10) != locations.end()) {
+				double shift = locations[(double)floor((gMap->getLocation().getX() + planeLocation.getX()) * 10) / 10];
+				gHero->setLocation(Point(gMap->getLocation().getX() + planeLocation.getX(), gMap->getLocation().getY(), shift + planeLocation.getZ()));
 				gHero->setLocationDir(directions[(double)floor((gMap->getLocation().getX() + planeLocation.getX()))]);
+				cout << "Plane X : " << planeLocation.getX() << endl;
 			}
 			gHero->Update();
         }

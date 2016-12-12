@@ -128,4 +128,22 @@
 		glTranslatef(x, y, z);
 	}
 
+	double Point::magSq() {
+		return x*x + y*y + z*z;
+	}
+
+	double Point::mag() {
+		double t = magSq();
+		if (t <= 0.0)
+			return 0;
+		return sqrt(t);
+	}
+
+	void Point::normalize() {
+		double m = mag();
+		x /= m;
+		y /= m;
+		z /= m;
+	}
+
 
