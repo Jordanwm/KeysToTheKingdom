@@ -27,6 +27,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <map>
 
 #include "BubbleSystem.h"
 #include "Camera.h"
@@ -71,6 +72,10 @@ BubbleSystem* gBubbleSystem = NULL;
 Point planeLocation;
 double maxHealth;
 vector<Point*> points;
+map<double, Point> directions;
+map<double, double> locations;
+BezierCurve track;
+vector<Point> bezierPoints;
 
 bool displayWinnerScreen = false;
 bool displayLoserScreen = false;
@@ -332,9 +337,17 @@ void renderScene(void)  {
 
     if (DEBUG_MAIN_LOOP)
         cout << "Updating Camera" << endl;
-    if (gCamera)
-        gCamera->Update();
-
+	if (gCamera) {
+		Point po = gMap->getLocation();
+		if (directions.find((double)floor(po.getX() * 10) / 10) != directions.end()) {
+			gCamera->setDirection(directions[((double)floor(po.getX() * 10) / 10)]);
+			gCamera->setZ(locations[((double)floor(po.getX() * 10) / 10)]);
+			gCamera->Update();
+		}
+		else {
+			gCamera->Update();
+		}
+	}
     glPushMatrix();{
         renderHealthHUD();
     }glPopMatrix();
@@ -567,7 +580,10 @@ void updateScene(int value){
 
         if (gHero){
             gHero->setLocation(Point(gMap->getLocation().getX() + planeLocation.getX(), gMap->getLocation().getY(), gMap->getLocation().getZ() + planeLocation.getZ()));
-            gHero->Update();
+			if (locations.find((double)floor((gMap->getLocation().getX() + planeLocation.getX()) * 10) / 10) != locations.end()) {
+				gHero->setLocationDir(directions[(double)floor((gMap->getLocation().getX() + planeLocation.getX()))]);
+			}
+			gHero->Update();
         }
 
         if (gBubbleSystem)
@@ -656,6 +672,34 @@ int main(int argc, char **argv) {
 
     if (!LoadGameFile(argc, argv)) // Load config file containing map, texture names, etc.
         return true;
+
+	
+
+	//Populate track.
+	for (int i = 0; i < points.size() - 1; i += 3) {
+		BezierCurve c(*points[i], *points[i + 1], *points[i + 2], *points[i + 3]);
+		track = c;
+	}
+
+	//Populate bezierPoints;
+	int i = 0;
+	for (float k = 0; k < 1; k += 1 / (float)1000) {
+		Point p = track.Evaluate(k);
+		bezierPoints.push_back(p);
+		Point tangent = track.EvaluateTangent(k);
+		Point direction = Point(tangent.getX(), 0.0, tangent.getZ());
+		if (floor(p.getX() * 10) > i) {
+			i = floor(p.getX() * 10);
+		}
+		if (floor(p.getX() * 10) == i) {
+			directions.insert(pair<double, Point>((double)(floor(p.getX() * 10)) / 10, direction));
+			locations.insert(pair<double, double>((double)(floor(p.getX() * 10)) / 10, p.getZ()));
+			//cout << "X : " << (double)(floor(p.getX() * 10)) / 10 << endl;
+			i++;
+		}
+		
+	}
+
 
     // Need map generated before doing bubble system.
     if (gMap){

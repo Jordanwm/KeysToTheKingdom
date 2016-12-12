@@ -21,6 +21,7 @@ public:
 	BezierCurve(Point p0, Point p1, Point p2, Point p3);
 
 	Point Evaluate(float t);
+	Point Evaluate(float u, float v);
 	Point EvaluateTangent(float t);
 
 	//void Print();
@@ -43,7 +44,7 @@ public:
 
 	int GetResolution() { return xResolution; }
 
-	Point Evaluate(float u, float v);
+	
 	/*Point EvaluateBasedOnXZ(float x, float z);
 	Point EvaluateNormalBasedOnXZ(float x, float z);
 	Point EvaluateBasedOnXZ_V2(float x, float z);

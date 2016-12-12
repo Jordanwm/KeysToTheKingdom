@@ -9,6 +9,7 @@ protected:
 	Point _Location;
 	double _Health;
 
+
 public:
 	Hero();
 
@@ -23,12 +24,15 @@ public:
 
 	virtual void Draw() = 0;
 	virtual void Update() = 0;
+
+	virtual void setLocationDir(Point p) = 0;
 };
 
 class Plane : public Hero {
 	double wing_rotation;
     double prop_rotation;
     double rotate_angle;
+	Point locationDir;
 
 public:
 	Plane();
@@ -43,6 +47,8 @@ public:
 
 	void setRotateAngle(double r){rotate_angle = r;}
 	double getRotateAngle(){return rotate_angle;}
+
+	void setLocationDir(Point p) { locationDir = p; }
 
 // Helper Draw Functions
 	void DrawBody();

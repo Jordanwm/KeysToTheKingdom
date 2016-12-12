@@ -4,12 +4,14 @@
 #include "Point.h"
 #include "Vector.h"
 #include <math.h>
+#include "Bezier.h"
 
 class Camera {
 protected:
 	Point _LookAt;
 	Point _Location;
 	Vector _UpVec;
+	BezierCurve path;
 
 public:
 	Camera();
@@ -23,19 +25,25 @@ public:
 
 	virtual void Recompute() = 0;
 	virtual void Update() = 0;
-
+	virtual void setZ(double a) = 0;
+	virtual void setDirection(Point a) = 0;
 	virtual void Print();
 };
 
 class ArcBall : public Camera {
 	double _Radius;
 	double _Phi, _Theta;
+	Point direction;
+	double z;
 
 public:
 	ArcBall();
 	ArcBall(Point lookAt, double r);
 
 	bool IsArcBall(){return true;}
+
+	void setZ(double a) { z = a; }
+	void setDirection(Point a) { direction = a; }
 
 	double getRadius(){ return _Radius; }
 	void setRadius(double r)
@@ -60,13 +68,15 @@ public:
 
 class TopDown : public Camera {
 	double _Radius;
+	double z;
+	Point direction;
 public:
 	TopDown();
 
 	bool IsTopDown(){return true;}
-
+	void setZ(double a) { z = a; }
 	void setUpVec(Vector v) {_UpVec = v;}
-
+	void setDirection(Point a) { direction = a; }
 	void Recompute();
 	void Update();
 };

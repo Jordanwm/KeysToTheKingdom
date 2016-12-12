@@ -5,6 +5,7 @@
 #include "Point.h"
 #include "Vector.h"
 #include "Bezier.h"
+#include <map>
 
 using namespace std;
 
@@ -19,6 +20,7 @@ class Map {
     double _CurrentProgress;
     double _Distance;
     double _WidthOfTrack;
+	//map<double, Point> directions;
 
 public:
     Map();

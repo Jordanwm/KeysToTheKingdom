@@ -115,6 +115,8 @@ bool LoadMapPoints(ifstream &file)
         floats.clear();
     }
 
+	
+
     gMap = new Map(points);
     return true;
 }

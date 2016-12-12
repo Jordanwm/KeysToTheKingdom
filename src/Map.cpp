@@ -14,6 +14,7 @@
 #include <cmath>
 #include "Texture_Utils.h"
 #include <vector>
+#include <map>
 
 #define DEBUG_CREATE_CORNERS 0
 #define DEBUG_ANGLE_OF_TURNS 0
@@ -221,9 +222,9 @@ void Map::Draw()
 
 	//Populate bezierPoints;
 	for (size_t j = 0; j < track.size(); j++) {
-		for (float k = 0; k < 1; k += 1 / (float)1000) {
+		for (float k = 0; k < 1; k += 1 / (float)100) {
 			Point p = track[j].Evaluate(k);
-			bezierPoints.push_back(p);
+			bezierPoints.push_back(p);			
 			//p.print();
 		}
 	}

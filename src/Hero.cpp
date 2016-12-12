@@ -34,10 +34,13 @@ void Plane::Update()
         _Health--;
     
     prop_rotation += 10;
+
+
     Vector dir(0,0,1);
     if (gMap){
-        Vector c = cross(dir, gMap->getHeading());
-        rotate_angle = angle(dir, gMap->getHeading()) * 180 / M_PI;
+		Vector vec(locationDir.getX(), locationDir.getY(), locationDir.getZ());
+        Vector c = cross(dir, vec);		
+        rotate_angle = angle(dir, vec) * 180 / M_PI;
         if (c.getY() < 0)
             rotate_angle *= -1;
     }

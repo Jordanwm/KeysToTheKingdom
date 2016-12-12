@@ -11,6 +11,8 @@
 #endif
 
 #include <iostream>
+#include "Bezier.h"
+#include "Point.h"
 
 Camera::Camera()
 {
@@ -40,6 +42,7 @@ ArcBall::ArcBall()
 	Recompute();
 	Update();
 }
+
 ArcBall::ArcBall(Point lookAt, double r)
 	:Camera(lookAt, Point(0.0, 0.0, 0.0))
 {
@@ -53,13 +56,15 @@ void ArcBall::Recompute()
 {
 	_Location.setX( _LookAt.getX() + _Radius * sin(_Phi) * cos(_Theta) );
     _Location.setY( _LookAt.getY() + _Radius * cos(_Phi) );
-    _Location.setZ( _LookAt.getZ() + _Radius * sin(_Phi) * sin(_Theta) );
+    //_Location.setZ( _LookAt.getZ() + _Radius * sin(_Phi) * sin(_Theta) );
+	_Location.setZ(z);
 }
+
 void ArcBall::Update()
 {
-    gluLookAt(_Location.getX(), _Location.getY(), _Location.getZ(),
-    	_LookAt.getX(), _LookAt.getY(), _LookAt.getZ(),
-    	_UpVec.getX(), _UpVec.getY(), _UpVec.getZ());
+	gluLookAt(_Location.getX(), _Location.getY(), z,
+		_Location.getX() + 3 * direction.getX(), _LookAt.getY(), z + 3 * direction.getZ(),
+		_UpVec.getX(), _UpVec.getY(), _UpVec.getZ());
 }
 
 TopDown::TopDown()
