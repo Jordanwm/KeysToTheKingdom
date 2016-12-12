@@ -350,7 +350,7 @@ void renderScene(void)  {
 		}
 		else {
 			gCamera->Update();
-			//cout << "Camera Problem : " << (double)floor(po.getX() * 10) / 10 << endl;
+			cout << "Camera Problem : " << (double)floor(po.getX() * 10) / 10 << endl;
 		}
 	}
     glPushMatrix();{
@@ -593,8 +593,9 @@ void updateScene(int value){
 				gHero->setLocation(Point(gMap->getLocation().getX() + planeLocation.getX(), gMap->getLocation().getY(), shift + planeLocation.getZ()));
 				gHero->setLocationDir(directions[(double)floor((gMap->getLocation().getX() + planeLocation.getX()))]);
 			}
+		
 			gHero->Update();
-			//cout << "Plane X : " << gMap->getLocation().getX() + planeLocation.getX() << endl;
+			
         }
 
         if (gBubbleSystem)
