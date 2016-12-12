@@ -62,6 +62,7 @@ void ArcBall::Recompute()
 
 void ArcBall::Update()
 {
+	//cout << "Arcball Update" << endl;
 	gluLookAt(_Location.getX(), _Location.getY(), z,
 		_Location.getX() + 3 * direction.getX(), _LookAt.getY(), z + 3 * direction.getZ(),
 		_UpVec.getX(), _UpVec.getY(), _UpVec.getZ());

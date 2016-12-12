@@ -187,6 +187,8 @@ void Map::MoveForward()
 
 void Map::Update()
 {
+
+	//cout << "Map Update" << endl;
 	// If we have reached the next point and there are more points, increment index
 	if (_CurrentLocation == *_PointsWithRoundedCorners[_IndexInPoints] && _PointsWithRoundedCorners.size() - 1 > _IndexInPoints){
 		_CurrentLocation = *_PointsWithRoundedCorners[_IndexInPoints];

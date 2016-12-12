@@ -30,6 +30,7 @@ Plane::Plane()
 extern Map* gMap;
 void Plane::Update()
 {
+	//cout << "Hero Update" << endl;
     if (!isDead())
         _Health--;
     

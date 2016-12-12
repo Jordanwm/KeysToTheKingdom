@@ -77,8 +77,6 @@ map<double, double> locations;
 BezierCurve track;
 vector<Point> bezierPoints;
 
-double lastZ = 0;
-
 bool displayWinnerScreen = false;
 bool displayLoserScreen = false;
 
@@ -103,6 +101,7 @@ void resizeWindow(int w, int h) {
 }
 
 void initScene()  {
+	cout << "initScene()" << endl;
     glEnable(GL_DEPTH_TEST);
 
     float lightCol[4] = { 1, 1, 1, 1};
@@ -140,6 +139,7 @@ void initScene()  {
 }
 
 void renderHealthHUD() {
+	//cout << "renderHealthHUD()" << endl;
     glDisable(GL_LIGHTING);
 
     glMatrixMode(GL_PROJECTION);
@@ -215,6 +215,7 @@ void renderHealthHUD() {
 }
 
 void renderEndingSequence() {
+	//cout << "renderEndingSequence()" << endl;
     glDisable(GL_LIGHTING);
 
     glMatrixMode(GL_PROJECTION);
@@ -308,6 +309,7 @@ void renderEndingSequence() {
 }
 
 void renderScene(void)  {
+	//cout << "renderScene()" << endl;
     if (DEBUG_MAIN_LOOP)
         cout << "Rendering Scene" << endl;
 
@@ -348,6 +350,7 @@ void renderScene(void)  {
 		}
 		else {
 			gCamera->Update();
+			//cout << "Camera Problem : " << (double)floor(po.getX() * 10) / 10 << endl;
 		}
 	}
     glPushMatrix();{
@@ -524,6 +527,7 @@ void mouseMotion(int x, int y) {
 }
 
 void updateScene(int value){
+	//cout << "updateScene()" << endl;
     if (DEBUG_MAIN_LOOP)
         cout << "Updating Scene" << endl;
 
@@ -548,6 +552,7 @@ void updateScene(int value){
     } else {
         if (gMap){
             gMap->Update();
+			//cout << gMap->getLocation().getX() << endl;
 
             // Update progress for color in fragment shader
             glUseProgram(trackShaderHandle);
@@ -587,9 +592,9 @@ void updateScene(int value){
 				double shift = locations[(double)floor((gMap->getLocation().getX() + planeLocation.getX()) * 10) / 10];
 				gHero->setLocation(Point(gMap->getLocation().getX() + planeLocation.getX(), gMap->getLocation().getY(), shift + planeLocation.getZ()));
 				gHero->setLocationDir(directions[(double)floor((gMap->getLocation().getX() + planeLocation.getX()))]);
-				cout << "Plane X : " << planeLocation.getX() << endl;
 			}
 			gHero->Update();
+			//cout << "Plane X : " << gMap->getLocation().getX() + planeLocation.getX() << endl;
         }
 
         if (gBubbleSystem)
@@ -605,6 +610,7 @@ void updateScene(int value){
 }
 
 void RestartGame(){
+	cout << "RestartGame()" << endl;
     displayWinnerScreen = false;
     displayLoserScreen = false;
     planeLocation = Point();
@@ -620,6 +626,7 @@ void RestartGame(){
     gHero = new Plane();
     gMap = new Map(points);
 
+
     // Need map generated before doing bubble system.
     if (gMap){
         gBubbleSystem = new BubbleSystem();
@@ -629,6 +636,7 @@ void RestartGame(){
 }
 
 int main(int argc, char **argv) {
+	cout << "main()" << endl;
     // create a double-buffered GLUT window at (50,50) with predefined windowsize
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
@@ -700,10 +708,39 @@ int main(int argc, char **argv) {
 		if (floor(p.getX() * 10) == i) {
 			directions.insert(pair<double, Point>((double)(floor(p.getX() * 10)) / 10, direction));
 			locations.insert(pair<double, double>((double)(floor(p.getX() * 10)) / 10, p.getZ()));
-			//cout << "X : " << (double)(floor(p.getX() * 10)) / 10 << endl;
 			i++;
+		}		
+	}
+
+	for (int j = 0; j < 1000; j++) {
+		if (directions.find((double)j / 10) == directions.end()) {
+			if (directions.find(((double)j / 10) - 0.1) != directions.end()) {
+				directions.insert(pair<double, Point>((double)j / 10, directions[((double)j / 10) - 0.1]));
+				locations.insert(pair<double, double>((double)j / 10, locations[((double)j / 10) - 0.1]));
+			}
+			else if (directions.find(((double)j / 10) - 0.2) != directions.end()) {
+				directions.insert(pair<double, Point>((double)j / 10, directions[((double)j / 10) - 0.2]));
+				locations.insert(pair<double, double>((double)j / 10, locations[((double)j / 10) - 0.2]));
+
+			}
+			else if (directions.find(((double)j / 10) - 0.3) != directions.end()) {
+				directions.insert(pair<double, Point>((double)j / 10, directions[((double)j / 10) - 0.3]));
+				locations.insert(pair<double, double>((double)j / 10, locations[((double)j / 10) - 0.3]));
+
+			}
+			else if (directions.find(((double)j / 10) - 0.4) != directions.end()) {
+				directions.insert(pair<double, Point>((double)j / 10, directions[((double)j / 10) - 0.4]));
+				locations.insert(pair<double, double>((double)j / 10, locations[((double)j / 10) - 0.4]));
+
+			}
+			else if (directions.find(((double)j / 10) - 0.5) != directions.end()) {
+				directions.insert(pair<double, Point>((double)j / 10, directions[((double)j / 10) - 0.5]));
+				locations.insert(pair<double, double>((double)j / 10, locations[((double)j / 10) - 0.5]));
+			}
+			else {
+				cout << "HELP !! " << endl;
+			}
 		}
-		
 	}
 
 
